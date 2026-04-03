@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atul Industries — PI Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif;font-size:14px;color:#1e293b;line-height:1.5}
+
+/* ─── CSS VARIABLES ─── */
+:root{
+  --navy:#0f2c5e;--gold:#f0c040;
+  --blue:#1a56db;--blue2:#1340b0;--bluel:#eff6ff;
+  --green:#16a34a;--greenl:#dcfce7;
+  --red:#dc2626;--redl:#fee2e2;
+  --amber:#d97706;--amberl:#fef3c7;
+  --purple:#7c3aed;--purplel:#f5f3ff;
+  --gray50:#f9fafb;--gray100:#f3f4f6;--gray200:#e5e7eb;
+  --gray300:#d1d5db;--gray400:#9ca3af;--gray500:#6b7280;
+  --gray600:#4b5563;--gray700:#374151;--gray800:#1f2937;--gray900:#111827;
+  --bg:#fff;--bg2:#f8fafc;--bg3:#f1f5f9;
+  --border:#e2e8f0;--border2:#cbd5e1;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --r:8px;--rl:12px;--rxl:16px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shm:0 4px 12px rgba(0,0,0,.09);
+}
+
+/* ─── LAYOUT ─── */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ─── SIDEBAR ─── */
+.sb{width:220px;min-width:220px;background:var(--navy);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sb-logo{padding:13px 14px 11px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px;cursor:pointer}
+.sb-logo img{height:30px;object-fit:contain}
+.sb-logo-txt{color:#fff;font-size:13px;font-weight:700;display:none}
+.sb-logo img[data-err]{display:none}
+.sb-logo img[data-err] + .sb-logo-txt{display:block}
+.sb-sec{padding:10px 14px 4px;font-size:10px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase}
+.sb-list{flex:1;overflow-y:auto;padding:4px 8px}
+.sb-list::-webkit-scrollbar{width:3px}
+.sb-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.6);font-size:13px;border:1px solid transparent;margin-bottom:1px;transition:all .15s;user-select:none}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.sb-item.on{background:var(--blue);color:#fff}
+.sb-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;letter-spacing:.02em}
+.sb-item.on .sb-av{background:rgba(255,255,255,.22)}
+.sb-info{min-width:0;flex:1}
+.sb-name{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-cnt{font-size:10px;opacity:.5;margin-top:1px}
+.sb-bottom{padding:10px 8px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:3px}
+.sb-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;transition:all .15s;border:1px dashed rgba(255,255,255,.15);background:transparent;width:100%;font-family:inherit}
+.sb-btn:hover{color:#fff;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.05)}
+.sb-btn.hi{border-style:solid;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)}
+
+/* ─── MAIN ─── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg3);min-width:0}
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--sh)}
+.bc{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);min-width:0;overflow:hidden}
+.bc-a{cursor:pointer;color:var(--text2);white-space:nowrap;transition:color .15s;flex-shrink:0}.bc-a:hover{color:var(--blue)}
+.bc-cur{color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bc-sep{color:var(--text3);font-size:10px;flex-shrink:0}
+.tba{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tabs{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;display:flex;flex-shrink:0}
+.tab{padding:11px 16px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;font-weight:400;transition:all .15s;display:flex;align-items:center;gap:6px;user-select:none}
+.tab:hover{color:var(--text)}.tab.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.badge{display:inline-flex;align-items:center;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:600;background:var(--gray100);color:var(--text2)}
+.tab.on .badge{background:var(--bluel);color:var(--blue)}
+.scroll{flex:1;overflow-y:auto;padding:18px}
+.scroll::-webkit-scrollbar{width:5px}.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;border:1px solid var(--border2);background:var(--bg);color:var(--text);transition:all .15s;white-space:nowrap;user-select:none}
+.btn:hover{background:var(--gray50);border-color:var(--gray300)}.btn:active{transform:scale(.98)}
+.btn-sm{padding:5px 11px;font-size:12px}.btn-xs{padding:3px 8px;font-size:11px}
+.bp{background:var(--blue);color:#fff;border-color:var(--blue)}.bp:hover{background:var(--blue2);border-color:var(--blue2)}
+.bg{background:var(--green);color:#fff;border-color:var(--green)}.bg:hover{background:#15803d}
+.br{background:transparent;color:var(--red);border-color:var(--red)}.br:hover{background:var(--redl)}
+.bgh{background:transparent;border-color:transparent;color:var(--text2)}.bgh:hover{background:var(--gray100);color:var(--text)}
+.ibt{padding:5px 7px;border-radius:var(--r);cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text2);display:inline-flex;align-items:center;font-size:13px;line-height:1;transition:all .15s}
+.ibt:hover{background:var(--gray100);color:var(--text);border-color:var(--gray300)}
+
+/* ─── CARD ─── */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--sh)}
+.ch{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ct{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+.cb{padding:14px 16px}
+
+/* ─── FORMS ─── */
+.fg{margin-bottom:11px}
+.fl{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px}
+.fl.req::after{content:' *';color:var(--red)}
+.fc{width:100%;border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-size:13px;color:var(--text);background:var(--bg);font-family:inherit;transition:border .15s,box-shadow .15s;outline:none}
+.fc:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
+.fc:disabled{background:var(--gray50);color:var(--text2);cursor:not-allowed}
+.mono{font-family:'JetBrains Mono',monospace;font-size:12px}
+select.fc{cursor:pointer;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 8px center;background-repeat:no-repeat;background-size:16px;padding-right:28px;-webkit-appearance:none;appearance:none}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+/* ─── KPI ─── */
+.krow{display:grid;gap:11px;margin-bottom:16px}
+.krow-4{grid-template-columns:repeat(4,1fr)}
+.krow-3{grid-template-columns:repeat(3,1fr)}
+.kpi{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:14px 16px;box-shadow:var(--sh)}
+.kpi-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.kpi-val{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* ─── PARTY GRID ─── */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.pcard{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:15px;cursor:pointer;transition:all .2s;box-shadow:var(--sh)}
+.pcard:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(26,86,219,.12);transform:translateY(-1px)}
+.pav{width:38px;height:38px;border-radius:9px;background:var(--bluel);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-bottom:9px;letter-spacing:.02em}
+.pname{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pmeta{font-size:11px;color:var(--text3);line-height:1.7}
+.pfoot{margin-top:9px;padding-top:9px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pacts{display:flex;gap:3px;opacity:0;transition:opacity .15s}
+.pcard:hover .pacts{opacity:1}
+
+/* ─── PF LIST ─── */
+.pfl{display:flex;flex-direction:column;gap:8px}
+.pfrow{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:12px 15px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);transition:border-color .15s}
+.pfrow:hover{border-color:var(--border2)}
+.pfnum{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--blue)}
+.pfdate{font-size:11px;color:var(--text3);margin-top:1px}
+.pfamt{font-size:14px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace}
+.pfgst{font-size:10px;color:var(--text3)}
+.pfacts{display:flex;gap:5px;flex-shrink:0;margin-left:auto}
+
+/* ─── DISCOUNT BAR ─── */
+.dbar{background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--rl);padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.dlbl{font-size:13px;font-weight:600;color:#1e40af;white-space:nowrap}
+.dinp{width:76px;border:1.5px solid #93c5fd;border-radius:var(--r);padding:5px 8px;font-size:16px;font-weight:700;color:#1e40af;background:#fff;text-align:center;font-family:'JetBrains Mono',monospace;outline:none}
+.dinp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.12)}
+
+/* ─── ITEMS TABLE ─── */
+.itw{overflow-x:auto;border-radius:var(--rl);border:1px solid var(--border)}
+.itbl{width:100%;border-collapse:collapse;font-size:12px;min-width:800px}
+.itbl th{background:var(--gray50);padding:8px 9px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;user-select:none}
+.itbl td{padding:6px 9px;border-bottom:1px solid var(--gray100);vertical-align:middle}
+.itbl tbody tr:last-child td{border-bottom:none}
+.itbl tbody tr:hover td{background:#f0f7ff}
+.ifc{border:1px solid var(--border2);border-radius:6px;padding:4px 7px;font-size:12px;width:100%;font-family:inherit;background:var(--bg);color:var(--text);outline:none;transition:border .15s}
+.ifc:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(26,86,219,.1)}
+select.ifc{cursor:pointer;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 6px center;background-repeat:no-repeat;background-size:14px;padding-right:22px;-webkit-appearance:none;appearance:none}
+.nr-a{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--blue)}
+.nr-m{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--green)}
+.delbtn{background:none;border:none;cursor:pointer;color:var(--text3);padding:3px 5px;border-radius:4px;font-size:13px;line-height:1;transition:all .15s}
+.delbtn:hover{color:var(--red);background:var(--redl)}
+
+/* ─── TOTALS ─── */
+.tpanel{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-top:10px;box-shadow:var(--sh)}
+.trow{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--gray100)}
+.trow:last-child{border:none}
+.tlbl{font-size:12px;color:var(--text2)}
+.tval{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--text)}
+.tgrand{background:var(--gray900)}
+.tgrand .tlbl,.tgrand .tval{color:#fff;font-weight:700;font-size:13px}
+
+/* ─── SETTINGS ─── */
+.stwrap{display:grid;grid-template-columns:175px 1fr;background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh)}
+.stnav{border-right:1px solid var(--border);padding:8px}
+.stni{padding:8px 11px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;margin-bottom:2px;user-select:none}
+.stni:hover{background:var(--gray50)}.stni.on{background:var(--bluel);color:var(--blue);font-weight:500}
+.stpanel{padding:18px;overflow-y:auto;max-height:calc(100vh - 120px)}
+
+/* ─── MODAL ─── */
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--bg);border-radius:var(--rxl);box-shadow:0 20px 60px rgba(0,0,0,.18);width:100%;max-width:460px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-w{max-width:560px}
+.mh{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mh h3{font-size:15px;font-weight:600}
+.mcls{background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;padding:0 4px;line-height:1;border-radius:4px}
+.mcls:hover{background:var(--gray100);color:var(--text)}
+.mbody{padding:18px;overflow-y:auto;flex:1}
+.mfoot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:44px 20px}
+.ei{font-size:36px;margin-bottom:10px;opacity:.4}
+.et{font-size:15px;font-weight:600;margin-bottom:5px}
+.es{font-size:13px;color:var(--text3);margin-bottom:16px}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--gray900);color:#fff;padding:10px 16px;border-radius:var(--rl);font-size:13px;z-index:9999;opacity:0;transform:translateY(6px);transition:all .25s;box-shadow:0 8px 24px rgba(0,0,0,.18);pointer-events:none;max-width:320px}
+.toast.on{opacity:1;transform:translateY(0)}
+.tok{background:#15803d}.terr{background:var(--red)}.tinf{background:#0369a1}
+
+/* ─── MISC ─── */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.pill-g{background:var(--greenl);color:var(--green)}
+.pill-r{background:var(--redl);color:var(--red)}
+.pill-b{background:var(--bluel);color:var(--blue)}
+.pill-a{background:var(--amberl);color:var(--amber)}
+.pill-p{background:var(--purplel);color:var(--purple)}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+@media print{.no-print{display:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sb no-print">
+    <div class="sb-logo" onclick="goDash()">
+      <img src="https://www.atulpipes.in/images/logo.png" alt="Atul"
+        onerror="this.setAttribute('data-err','1');this.nextElementSibling.style.display='block'">
+      <div class="sb-logo-txt">ATUL<span style="color:#f0c040">PIPES</span></div>
+    </div>
+    <div class="sb-sec">Sales Team</div>
+    <div class="sb-list" id="sbList"></div>
+    <div class="sb-bottom">
+      <button class="sb-btn" id="sbDash" onclick="goDash()">📊 &nbsp;Dashboard</button>
+      <button class="sb-btn" onclick="openAddSP()">＋ &nbsp;Add Salesperson</button>
+      <button class="sb-btn" onclick="goSettings()">⚙ &nbsp;Settings</button>
+    </div>
+  </div>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar no-print">
+      <div class="bc" id="bc"></div>
+      <div class="tba" id="tba"></div>
+    </div>
+    <div class="tabs no-print" id="tabBar" style="display:none"></div>
+    <div class="scroll" id="content"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+{% csrf_token %}
+<script>
+'use strict';
+/* ═══════════════════════════════════════════
+   DATA LAYER
+═══════════════════════════════════════════ */
+const KDB='pim_v6', KCO='pim_co_v3', KPL='pim_pl_v2';
+const SEED={"sp":[{"id":"3d606b0f","name":"Alok Singh","phone":"9661510467","email":"alok@atulpipes.com"}],"parties":[{"id":"53c94d3e","spId":"3d606b0f","name":"Ambuja Trading","city":"Patna","state":"Bihar","gstin":"","address":"Patna, Bihar 800016","phone":"","email":""},{"id":"36cedc0c","spId":"3d606b0f","name":"B Rai & Company","city":"M/S B. Rai & Company","state":"","gstin":"","address":"M/S B. Rai & Company","phone":"","email":""},{"id":"19ad8fdf","spId":"3d606b0f","name":"Milan Electrical","city":"Patna","state":"","gstin":"","address":"Patna, Bihar- 800016","phone":"","email":""},{"id":"a8012e67","spId":"3d606b0f","name":"Om Sai","city":"Patna","state":"","gstin":"","address":"Patna","phone":"","email":""},{"id":"8e021ce2","spId":"3d606b0f","name":"SKS","city":"M/s SKS Construction Company","state":"","gstin":"","address":"M/s SKS Construction Company","phone":"","email":""},{"id":"5810d751","spId":"3d606b0f","name":"Thakur Enterprises","city":"M/s Thakur Enterprises","state":"","gstin":"","address":"M/s Thakur Enterprises","phone":"","email":""},{"id":"cafeeaf4","spId":"3d606b0f","name":"Sarang Electric","city":"M/s Sarang Electric","state":"","gstin":"","address":"M/s Sarang Electric","phone":"","email":""}],"proformas":[{"id":"8b8dcfa0","number":"PI-AL-2512-01","date":"2025-12-05","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":20.0,"rate":1003.2,"listRate":1003.2,"netRate":1003.2,"unit":"Bundle","amount":20064.0,"disc":0,"narration":"","id":"ee613032"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":15.0,"rate":858.0,"listRate":858.0,"netRate":858.0,"unit":"Bundle","amount":12870.0,"disc":0,"narration":"","id":"c22c5889"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":10.0,"rate":1534.8,"listRate":1534.8,"netRate":1534.8,"unit":"Bundle","amount":15348.0,"disc":0,"narration":"","id":"d73c16bf"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":12.0,"rate":1260.75,"listRate":1260.75,"netRate":1260.75,"unit":"Bundle","amount":15129.0,"disc":0,"narration":"","id":"ea2336f0"},{"itemName":"PVC Bend 20mm Heavy","qty":1200.0,"rate":6.543,"listRate":6.543,"netRate":6.543,"unit":"Pcs","amount":7851.6,"disc":0,"narration":"","id":"809420bd"},{"itemName":"PVC Bend 25mm Heavy","qty":1000.0,"rate":8.28,"listRate":8.28,"netRate":8.28,"unit":"Pcs","amount":8280.0,"disc":0,"narration":"","id":"1f569265"},{"itemName":"PVC Socket 20mm","qty":100.0,"rate":2.66,"listRate":2.66,"netRate":2.66,"unit":"Pcs","amount":266.0,"disc":0,"narration":"","id":"df1921c9"},{"itemName":"PVC Socket 25mm","qty":100.0,"rate":3.55,"listRate":3.55,"netRate":3.55,"unit":"Pcs","amount":355.0,"disc":0,"narration":"","id":"4c9a4b11"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":300.0,"rate":12.84,"listRate":12.84,"netRate":12.84,"unit":"Pcs","amount":3852.0,"disc":0,"narration":"","id":"94afb762"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":200.0,"rate":15.72,"listRate":15.72,"netRate":15.72,"unit":"Pcs","amount":3144.0,"disc":0,"narration":"","id":"0f034061"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":400.0,"rate":13.39,"listRate":13.39,"netRate":13.39,"unit":"Pcs","amount":5356.0,"disc":0,"narration":"","id":"e5d8c77b"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":300.0,"rate":18.38,"listRate":18.38,"netRate":18.38,"unit":"Pcs","amount":5514.0,"disc":0,"narration":"","id":"ce81cd85"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":200.0,"rate":20.04,"listRate":20.04,"netRate":20.04,"unit":"Pcs","amount":4008.0,"disc":0,"narration":"","id":"0e1864ce"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":200.0,"rate":25.03,"listRate":25.03,"netRate":25.03,"unit":"Pcs","amount":5006.0,"disc":0,"narration":"","id":"f7ed72b9"},{"itemName":"GI Box 3x3 (18G, 1-2M)","qty":100.0,"rate":27.3,"listRate":27.3,"netRate":27.3,"unit":"Pcs","amount":2730.0,"disc":0,"narration":"","id":"fa45953d"},{"itemName":"GI Box 4x3 (18G, 3M)","qty":150.0,"rate":33.6,"listRate":33.6,"netRate":33.6,"unit":"Pcs","amount":5040.0,"disc":0,"narration":"","id":"e18c4545"},{"itemName":"GI Box 5x3 (18G, 4M)","qty":70.0,"rate":39.9,"listRate":39.9,"netRate":39.9,"unit":"Pcs","amount":2793.0,"disc":0,"narration":"","id":"69ff45f4"},{"itemName":"GI Box 8x3 (18G, 6M)","qty":200.0,"rate":56.7,"listRate":56.7,"netRate":56.7,"unit":"Pcs","amount":11340.0,"disc":0,"narration":"","id":"ed0764a8"},{"itemName":"GI Box 5x5 (18G, 8M)","qty":100.0,"rate":63.0,"listRate":63.0,"netRate":63.0,"unit":"Pcs","amount":6300.0,"disc":0,"narration":"","id":"65e5214b"},{"itemName":"GI Box 8x6 (18G, 12M)","qty":150.0,"rate":84.0,"listRate":84.0,"netRate":84.0,"unit":"Pcs","amount":12600.0,"disc":0,"narration":"","id":"12c40488"},{"itemName":"GI Box 8x8 (18G, 18M)","qty":50.0,"rate":109.2,"listRate":109.2,"netRate":109.2,"unit":"Pcs","amount":5460.0,"disc":0,"narration":"","id":"72313552"},{"itemName":"SPN DB Box 8way","qty":10.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":4620.0,"disc":0,"narration":"","id":"0be7e0d9"},{"itemName":"SPN DB Box 12way","qty":10.0,"rate":562.8,"listRate":562.8,"netRate":562.8,"unit":"Pcs","amount":5628.0,"disc":0,"narration":"","id":"a6390739"},{"itemName":"SPN DB Box 16way","qty":10.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":6636.0,"disc":0,"narration":"","id":"f670d0c1"},{"itemName":"TPN DB 4way","qty":10.0,"rate":1060.5,"listRate":1060.5,"netRate":1060.5,"unit":"Pcs","amount":10605.0,"disc":0,"narration":"","id":"34335ac4"},{"itemName":"TPN DB 6way","qty":10.0,"rate":1272.6,"listRate":1272.6,"netRate":1272.6,"unit":"Pcs","amount":12726.0,"disc":0,"narration":"","id":"2e08ab1a"},{"itemName":"TPN DB 8way","qty":10.0,"rate":1484.7,"listRate":1484.7,"netRate":1484.7,"unit":"Pcs","amount":14847.0,"disc":0,"narration":"","id":"6dffcad2"},{"itemName":"Concealed Box (2.5\")","qty":200.0,"rate":35.7,"listRate":35.7,"netRate":35.7,"unit":"Pcs","amount":7140.0,"disc":0,"narration":"","id":"d5f2219e"}],"subtotal":215508.6,"gstAmt":38791.55,"grandTotal":254300.15,"partyId":"53c94d3e","spId":"3d606b0f","shipTo":null},{"id":"bf0d442a","number":"PI-AL-2512-02","date":"2025-12-06","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":20.0,"rate":1003.2,"listRate":1003.2,"netRate":1003.2,"unit":"Bundle","amount":20064.0,"disc":0,"narration":"","id":"26960ba0"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":15.0,"rate":858.0,"listRate":858.0,"netRate":858.0,"unit":"Bundle","amount":12870.0,"disc":0,"narration":"","id":"3b0e0728"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":10.0,"rate":1534.8,"listRate":1534.8,"netRate":1534.8,"unit":"Bundle","amount":15348.0,"disc":0,"narration":"","id":"2a82eb0a"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":12.0,"rate":1260.75,"listRate":1260.75,"netRate":1260.75,"unit":"Bundle","amount":15129.0,"disc":0,"narration":"","id":"06a22566"},{"itemName":"PVC Bend 20mm Medium","qty":1200.0,"rate":3.53,"listRate":3.53,"netRate":3.53,"unit":"Pcs","amount":4236.0,"disc":0,"narration":"","id":"d74b8b31"},{"itemName":"PVC Bend 25mm Medium","qty":1000.0,"rate":4.9,"listRate":4.9,"netRate":4.9,"unit":"Pcs","amount":4900.0,"disc":0,"narration":"","id":"31ef60a5"},{"itemName":"PVC Socket 20mm","qty":100.0,"rate":2.66,"listRate":2.66,"netRate":2.66,"unit":"Pcs","amount":266.0,"disc":0,"narration":"","id":"b3ef5521"},{"itemName":"PVC Socket 25mm","qty":100.0,"rate":3.55,"listRate":3.55,"netRate":3.55,"unit":"Pcs","amount":355.0,"disc":0,"narration":"","id":"a60efe16"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":300.0,"rate":12.84,"listRate":12.84,"netRate":12.84,"unit":"Pcs","amount":3852.0,"disc":0,"narration":"","id":"cdaab14a"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":200.0,"rate":15.72,"listRate":15.72,"netRate":15.72,"unit":"Pcs","amount":3144.0,"disc":0,"narration":"","id":"2e43f2f8"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":400.0,"rate":13.39,"listRate":13.39,"netRate":13.39,"unit":"Pcs","amount":5356.0,"disc":0,"narration":"","id":"b747820f"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":300.0,"rate":18.38,"listRate":18.38,"netRate":18.38,"unit":"Pcs","amount":5514.0,"disc":0,"narration":"","id":"59087674"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":200.0,"rate":20.04,"listRate":20.04,"netRate":20.04,"unit":"Pcs","amount":4008.0,"disc":0,"narration":"","id":"ef2f2b46"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":200.0,"rate":25.03,"listRate":25.03,"netRate":25.03,"unit":"Pcs","amount":5006.0,"disc":0,"narration":"","id":"60b3463a"},{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":100.0,"rate":23.1,"listRate":23.1,"netRate":23.1,"unit":"Pcs","amount":2310.0,"disc":0,"narration":"","id":"b8281860"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":150.0,"rate":27.3,"listRate":27.3,"netRate":27.3,"unit":"Pcs","amount":4095.0,"disc":0,"narration":"","id":"2f62a19b"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":70.0,"rate":33.6,"listRate":33.6,"netRate":33.6,"unit":"Pcs","amount":2352.0,"disc":0,"narration":"","id":"f497541c"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":200.0,"rate":48.3,"listRate":48.3,"netRate":48.3,"unit":"Pcs","amount":9660.0,"disc":0,"narration":"","id":"2311aaa6"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":100.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":5460.0,"disc":0,"narration":"","id":"e7a301e6"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":150.0,"rate":75.6,"listRate":75.6,"netRate":75.6,"unit":"Pcs","amount":11340.0,"disc":0,"narration":"","id":"519282cb"},{"itemName":"GI Box 8x8 (20G, 18M)","qty":50.0,"rate":92.4,"listRate":92.4,"netRate":92.4,"unit":"Pcs","amount":4620.0,"disc":0,"narration":"","id":"7e32647f"},{"itemName":"SPN DB Box 8way","qty":10.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":4620.0,"disc":0,"narration":"","id":"6df77325"},{"itemName":"SPN DB Box 12way","qty":10.0,"rate":562.8,"listRate":562.8,"netRate":562.8,"unit":"Pcs","amount":5628.0,"disc":0,"narration":"","id":"2e54877c"},{"itemName":"SPN DB Box 16way","qty":10.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":6636.0,"disc":0,"narration":"","id":"25d52711"},{"itemName":"TPN DB 4way","qty":10.0,"rate":1060.5,"listRate":1060.5,"netRate":1060.5,"unit":"Pcs","amount":10605.0,"disc":0,"narration":"","id":"6b01f93b"},{"itemName":"TPN DB 6way","qty":10.0,"rate":1272.6,"listRate":1272.6,"netRate":1272.6,"unit":"Pcs","amount":12726.0,"disc":0,"narration":"","id":"b4959259"},{"itemName":"TPN DB 8way","qty":10.0,"rate":1484.7,"listRate":1484.7,"netRate":1484.7,"unit":"Pcs","amount":14847.0,"disc":0,"narration":"","id":"6a0ebbae"},{"itemName":"Concealed Box (2.5\")","qty":200.0,"rate":32.0,"listRate":32.0,"netRate":32.0,"unit":"Pcs","amount":6400.0,"disc":0,"narration":"","id":"ed39efa9"}],"subtotal":201347.0,"gstAmt":36242.46,"grandTotal":237589.46,"partyId":"53c94d3e","spId":"3d606b0f","shipTo":null},{"id":"2c8d1ce4","number":"PI-AL-2512-03","date":"2025-12-08","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":20.0,"rate":1003.2,"listRate":1003.2,"netRate":1003.2,"unit":"Bundle","amount":20064.0,"disc":0,"narration":"","id":"ce23f4a8"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":15.0,"rate":858.0,"listRate":858.0,"netRate":858.0,"unit":"Bundle","amount":12870.0,"disc":0,"narration":"","id":"b71c607b"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":10.0,"rate":1534.8,"listRate":1534.8,"netRate":1534.8,"unit":"Bundle","amount":15348.0,"disc":0,"narration":"","id":"a19cff92"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":12.0,"rate":1260.75,"listRate":1260.75,"netRate":1260.75,"unit":"Bundle","amount":15129.0,"disc":0,"narration":"","id":"4155bc25"},{"itemName":"PVC Bend 20mm Medium","qty":1200.0,"rate":3.53,"listRate":3.53,"netRate":3.53,"unit":"Pcs","amount":4236.0,"disc":0,"narration":"","id":"fa1a5c0e"},{"itemName":"PVC Bend 25mm Medium","qty":1000.0,"rate":4.9,"listRate":4.9,"netRate":4.9,"unit":"Pcs","amount":4900.0,"disc":0,"narration":"","id":"06ddbda9"},{"itemName":"PVC Socket 20mm","qty":100.0,"rate":2.67,"listRate":2.67,"netRate":2.67,"unit":"Pcs","amount":267.0,"disc":0,"narration":"","id":"8449c4e0"},{"itemName":"PVC Socket 25mm","qty":100.0,"rate":3.55,"listRate":3.55,"netRate":3.55,"unit":"Pcs","amount":355.0,"disc":0,"narration":"","id":"05ba5a5f"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":300.0,"rate":12.84,"listRate":12.84,"netRate":12.84,"unit":"Pcs","amount":3852.0,"disc":0,"narration":"","id":"8a593ee4"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":200.0,"rate":15.72,"listRate":15.72,"netRate":15.72,"unit":"Pcs","amount":3144.0,"disc":0,"narration":"","id":"f21b60b2"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":400.0,"rate":13.39,"listRate":13.39,"netRate":13.39,"unit":"Pcs","amount":5356.0,"disc":0,"narration":"","id":"6226c405"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":300.0,"rate":18.38,"listRate":18.38,"netRate":18.38,"unit":"Pcs","amount":5514.0,"disc":0,"narration":"","id":"e6f92471"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":200.0,"rate":20.04,"listRate":20.04,"netRate":20.04,"unit":"Pcs","amount":4008.0,"disc":0,"narration":"","id":"4cb3523d"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":200.0,"rate":25.03,"listRate":25.03,"netRate":25.03,"unit":"Pcs","amount":5006.0,"disc":0,"narration":"","id":"64864327"},{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":100.0,"rate":23.1,"listRate":23.1,"netRate":23.1,"unit":"Pcs","amount":2310.0,"disc":0,"narration":"","id":"f38b8fc2"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":150.0,"rate":27.3,"listRate":27.3,"netRate":27.3,"unit":"Pcs","amount":4095.0,"disc":0,"narration":"","id":"3147e365"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":70.0,"rate":33.6,"listRate":33.6,"netRate":33.6,"unit":"Pcs","amount":2352.0,"disc":0,"narration":"","id":"aea1b928"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":200.0,"rate":48.3,"listRate":48.3,"netRate":48.3,"unit":"Pcs","amount":9660.0,"disc":0,"narration":"","id":"24cff7a6"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":100.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":5460.0,"disc":0,"narration":"","id":"c4c9d45d"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":200.0,"rate":75.6,"listRate":75.6,"netRate":75.6,"unit":"Pcs","amount":15120.0,"disc":0,"narration":"","id":"484ad53b"},{"itemName":"GI Box 9x3 (20G, 8M)","qty":100.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":5460.0,"disc":0,"narration":"","id":"998625de"},{"itemName":"SPN DB Box 8way","qty":10.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":4620.0,"disc":0,"narration":"","id":"d6466ab8"},{"itemName":"SPN DB Box 12way","qty":10.0,"rate":562.8,"listRate":562.8,"netRate":562.8,"unit":"Pcs","amount":5628.0,"disc":0,"narration":"","id":"22ac4e2b"},{"itemName":"SPN DB Box 16way","qty":10.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":6636.0,"disc":0,"narration":"","id":"012c778d"},{"itemName":"TPN DB 4way","qty":17.0,"rate":1060.5,"listRate":1060.5,"netRate":1060.5,"unit":"Pcs","amount":18028.5,"disc":0,"narration":"","id":"14510b68"},{"itemName":"TPN DB 6way","qty":12.0,"rate":1272.6,"listRate":1272.6,"netRate":1272.6,"unit":"Pcs","amount":15271.2,"disc":0,"narration":"","id":"ffe710f7"},{"itemName":"TPN DB 8way","qty":10.0,"rate":1484.7,"listRate":1484.7,"netRate":1484.7,"unit":"Pcs","amount":14847.0,"disc":0,"narration":"","id":"01d1219d"},{"itemName":"Concealed Box (2.5\")","qty":200.0,"rate":28.0,"listRate":28.0,"netRate":28.0,"unit":"Pcs","amount":5600.0,"disc":0,"narration":"","id":"68ba5e27"}],"subtotal":215136.7,"gstAmt":38724.61,"grandTotal":253861.31,"partyId":"53c94d3e","spId":"3d606b0f","shipTo":null},{"id":"dd4d137c","number":"PI-AL-2512-04","date":"2025-12-08","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":180.0,"rate":21.5,"listRate":21.5,"netRate":21.5,"unit":"Pcs","amount":3870.0,"disc":0,"narration":"","id":"455a672b"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":180.0,"rate":26.5,"listRate":26.5,"netRate":26.5,"unit":"Pcs","amount":4770.0,"disc":0,"narration":"","id":"6eed149d"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":90.0,"rate":33.0,"listRate":33.0,"netRate":33.0,"unit":"Pcs","amount":2970.0,"disc":0,"narration":"","id":"5ebf0bea"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":180.0,"rate":43.0,"listRate":43.0,"netRate":43.0,"unit":"Pcs","amount":7740.0,"disc":0,"narration":"","id":"ff4451b8"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":90.0,"rate":54.0,"listRate":54.0,"netRate":54.0,"unit":"Pcs","amount":4860.0,"disc":0,"narration":"","id":"9e73dffa"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":180.0,"rate":69.0,"listRate":69.0,"netRate":69.0,"unit":"Pcs","amount":12420.0,"disc":0,"narration":"","id":"08146880"},{"itemName":"GI Box 9x3 (20G, 8M)","qty":80.0,"rate":54.0,"listRate":54.0,"netRate":54.0,"unit":"Pcs","amount":4320.0,"disc":0,"narration":"","id":"d7589e56"},{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":180.0,"rate":23.1,"listRate":23.1,"netRate":23.1,"unit":"Pcs","amount":4158.0,"disc":0,"narration":"","id":"455a672b"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":180.0,"rate":27.1,"listRate":27.1,"netRate":27.1,"unit":"Pcs","amount":4878.0,"disc":0,"narration":"","id":"6eed149d"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":90.0,"rate":33.6,"listRate":33.6,"netRate":33.6,"unit":"Pcs","amount":3024.0,"disc":0,"narration":"","id":"5ebf0bea"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":180.0,"rate":48.3,"listRate":48.3,"netRate":48.3,"unit":"Pcs","amount":8694.0,"disc":0,"narration":"","id":"ff4451b8"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":90.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":4914.0,"disc":0,"narration":"","id":"9e73dffa"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":180.0,"rate":75.6,"listRate":75.6,"netRate":75.6,"unit":"Pcs","amount":13608.0,"disc":0,"narration":"","id":"08146880"},{"itemName":"GI Box 9x3 (20G, 8M)","qty":80.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":4368.0,"disc":0,"narration":"","id":"d7589e56"}],"subtotal":84594.0,"gstAmt":15226.92,"grandTotal":99820.92,"partyId":"53c94d3e","spId":"3d606b0f","shipTo":null},{"id":"ceba6df7","number":"PI-AL-2512-04","date":"2025-12-08","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":180.0,"rate":21.5,"listRate":21.5,"netRate":21.5,"unit":"Pcs","amount":3870.0,"disc":0,"narration":"","id":"9d098e1c"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":180.0,"rate":26.5,"listRate":26.5,"netRate":26.5,"unit":"Pcs","amount":4770.0,"disc":0,"narration":"","id":"662698f6"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":90.0,"rate":33.0,"listRate":33.0,"netRate":33.0,"unit":"Pcs","amount":2970.0,"disc":0,"narration":"","id":"59c15e7b"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":180.0,"rate":43.0,"listRate":43.0,"netRate":43.0,"unit":"Pcs","amount":7740.0,"disc":0,"narration":"","id":"0cedb983"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":90.0,"rate":54.0,"listRate":54.0,"netRate":54.0,"unit":"Pcs","amount":4860.0,"disc":0,"narration":"","id":"d69937cb"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":180.0,"rate":69.0,"listRate":69.0,"netRate":69.0,"unit":"Pcs","amount":12420.0,"disc":0,"narration":"","id":"74235fc2"},{"itemName":"GI Box 9x3 (20G, 8M)","qty":80.0,"rate":54.0,"listRate":54.0,"netRate":54.0,"unit":"Pcs","amount":4320.0,"disc":0,"narration":"","id":"364d59ae"},{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":180.0,"rate":23.1,"listRate":23.1,"netRate":23.1,"unit":"Pcs","amount":4158.0,"disc":0,"narration":"","id":"9d098e1c"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":180.0,"rate":27.1,"listRate":27.1,"netRate":27.1,"unit":"Pcs","amount":4878.0,"disc":0,"narration":"","id":"662698f6"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":90.0,"rate":33.6,"listRate":33.6,"netRate":33.6,"unit":"Pcs","amount":3024.0,"disc":0,"narration":"","id":"59c15e7b"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":180.0,"rate":48.3,"listRate":48.3,"netRate":48.3,"unit":"Pcs","amount":8694.0,"disc":0,"narration":"","id":"0cedb983"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":90.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":4914.0,"disc":0,"narration":"","id":"d69937cb"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":180.0,"rate":75.6,"listRate":75.6,"netRate":75.6,"unit":"Pcs","amount":13608.0,"disc":0,"narration":"","id":"74235fc2"},{"itemName":"GI Box 9x3 (20G, 8M)","qty":80.0,"rate":54.6,"listRate":54.6,"netRate":54.6,"unit":"Pcs","amount":4368.0,"disc":0,"narration":"","id":"364d59ae"}],"subtotal":84594.0,"gstAmt":15226.92,"grandTotal":99820.92,"partyId":"53c94d3e","spId":"3d606b0f","shipTo":null},{"id":"ed37a4a6","number":"PI-AL-2512-05","date":"2025-12-29","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":12.0,"rate":1560.75,"listRate":1560.75,"netRate":1560.75,"unit":"Bundle","amount":18729.0,"disc":0,"narration":"","id":"35c267d1"}],"subtotal":18729.0,"gstAmt":3371.22,"grandTotal":22100.22,"partyId":"53c94d3e","spId":"3d606b0f","shipTo":null},{"id":"f1876d2d","number":"PI-AL-2512-01","date":"2025-12-27","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium (1.6mm Thick)","qty":1.0,"rate":12.327,"listRate":12.327,"netRate":12.327,"unit":"Mtr","amount":12.33,"disc":0,"narration":"","id":"c3ffedb5"},{"itemName":"PVC Conduit Pipe 20mm Heavy (2mm Thick)","qty":1.0,"rate":15.792,"listRate":15.792,"netRate":15.792,"unit":"Mtr","amount":15.79,"disc":0,"narration":"","id":"17ed305c"},{"itemName":"PVC Conduit Pipe 25mm Medium (1.6mm Thick)","qty":1.0,"rate":16.820999999999998,"listRate":16.820999999999998,"netRate":16.820999999999998,"unit":"Mtr","amount":16.82,"disc":0,"narration":"","id":"7c65a087"},{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":1.0,"rate":20.328,"listRate":20.328,"netRate":20.328,"unit":"Mtr","amount":20.33,"disc":0,"narration":"","id":"1b44aa75"},{"itemName":"PVC Conduit Pipe 32mm Medium","qty":1.0,"rate":21.672,"listRate":21.672,"netRate":21.672,"unit":"Mtr","amount":21.67,"disc":0,"narration":"","id":"86461630"},{"itemName":"PVC Conduit Pipe 32mm Heavy","qty":1.0,"rate":25.137,"listRate":25.137,"netRate":25.137,"unit":"Mtr","amount":25.14,"disc":0,"narration":"","id":"02ba8416"},{"itemName":"PVC Bend 20mm Heavy","qty":1.0,"rate":4.473,"listRate":4.473,"netRate":4.473,"unit":"Pcs","amount":4.47,"disc":0,"narration":"","id":"f06e4774"},{"itemName":"PVC Bend 25mm Heavy","qty":1.0,"rate":5.67,"listRate":5.67,"netRate":5.67,"unit":"Pcs","amount":5.67,"disc":0,"narration":"","id":"1cd10aae"},{"itemName":"PVC Bend 32mm Heavy","qty":1.0,"rate":10.562999999999999,"listRate":10.562999999999999,"netRate":10.562999999999999,"unit":"Pcs","amount":10.56,"disc":0,"narration":"","id":"87ded747"},{"itemName":"PVC Surface J.Box 20mm 2way","qty":1.0,"rate":11.256,"listRate":11.256,"netRate":11.256,"unit":"Pcs","amount":11.26,"disc":0,"narration":"","id":"8216fa2c"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":1.0,"rate":12.537,"listRate":12.537,"netRate":12.537,"unit":"Pcs","amount":12.54,"disc":0,"narration":"","id":"7e290242"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":1.0,"rate":13.082999999999998,"listRate":13.082999999999998,"netRate":13.082999999999998,"unit":"Pcs","amount":13.08,"disc":0,"narration":"","id":"7191ffc2"},{"itemName":"PVC Surface J.Box 25mm 2way","qty":1.0,"rate":13.272,"listRate":13.272,"netRate":13.272,"unit":"Pcs","amount":13.27,"disc":0,"narration":"","id":"11ca497d"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":1.0,"rate":15.350999999999999,"listRate":15.350999999999999,"netRate":15.350999999999999,"unit":"Pcs","amount":15.35,"disc":0,"narration":"","id":"7334e4d6"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":1.0,"rate":17.955,"listRate":17.955,"netRate":17.955,"unit":"Pcs","amount":17.95,"disc":0,"narration":"","id":"61614bcc"},{"itemName":"PVC Surface J.Box 32mm 2way","qty":1.0,"rate":23.247,"listRate":23.247,"netRate":23.247,"unit":"Pcs","amount":23.25,"disc":0,"narration":"","id":"7f3b44c6"},{"itemName":"PVC Surface J.Box 32mm 3way","qty":1.0,"rate":23.898,"listRate":23.898,"netRate":23.898,"unit":"Pcs","amount":23.9,"disc":0,"narration":"","id":"f260f9e1"},{"itemName":"PVC Surface J.Box 32mm 4way","qty":1.0,"rate":24.99,"listRate":24.99,"netRate":24.99,"unit":"Pcs","amount":24.99,"disc":0,"narration":"","id":"b4fc498a"},{"itemName":"PVC Deep J.Box 20mm 2way","qty":1.0,"rate":17.199,"listRate":17.199,"netRate":17.199,"unit":"Pcs","amount":17.2,"disc":0,"narration":"","id":"545ac183"},{"itemName":"PVC Deep J.Box 20mm 3way","qty":1.0,"rate":19.152,"listRate":19.152,"netRate":19.152,"unit":"Pcs","amount":19.15,"disc":0,"narration":"","id":"64429a82"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":1.0,"rate":19.572,"listRate":19.572,"netRate":19.572,"unit":"Pcs","amount":19.57,"disc":0,"narration":"","id":"05048a56"},{"itemName":"PVC Deep J.Box 25mm 2way","qty":1.0,"rate":20.118,"listRate":20.118,"netRate":20.118,"unit":"Pcs","amount":20.12,"disc":0,"narration":"","id":"e306a3f3"},{"itemName":"PVC Deep J.Box 25mm 3way","qty":1.0,"rate":23.247,"listRate":23.247,"netRate":23.247,"unit":"Pcs","amount":23.25,"disc":0,"narration":"","id":"5a916976"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":1.0,"rate":24.444,"listRate":24.444,"netRate":24.444,"unit":"Pcs","amount":24.44,"disc":0,"narration":"","id":"a66793da"},{"itemName":"PVC Deep J.Box 32mm 2way","qty":1.0,"rate":24.003,"listRate":24.003,"netRate":24.003,"unit":"Pcs","amount":24.0,"disc":0,"narration":"","id":"2c228046"},{"itemName":"PVC Deep J.Box 32mm 3way","qty":1.0,"rate":25.619999999999997,"listRate":25.619999999999997,"netRate":25.619999999999997,"unit":"Pcs","amount":25.62,"disc":0,"narration":"","id":"65dc57f3"},{"itemName":"PVC Deep J.Box 32mm 4way","qty":1.0,"rate":26.270999999999997,"listRate":26.270999999999997,"netRate":26.270999999999997,"unit":"Pcs","amount":26.27,"disc":0,"narration":"","id":"6f6f3372"},{"itemName":"GI Box 3x3 (18G, 1-2M)","qty":1.0,"rate":26.65,"listRate":26.65,"netRate":26.65,"unit":"Pcs","amount":26.65,"disc":0,"narration":"","id":"038bcee2"},{"itemName":"GI Box 4x3 (18G, 3M)","qty":1.0,"rate":32.8,"listRate":32.8,"netRate":32.8,"unit":"Pcs","amount":32.8,"disc":0,"narration":"","id":"321d18b0"},{"itemName":"GI Box 5x3 (18G, 4M)","qty":1.0,"rate":38.949999999999996,"listRate":38.949999999999996,"netRate":38.949999999999996,"unit":"Pcs","amount":38.95,"disc":0,"narration":"","id":"6ca034bc"},{"itemName":"GI Box 8x3 (18G, 6M)","qty":1.0,"rate":55.349999999999994,"listRate":55.349999999999994,"netRate":55.349999999999994,"unit":"Pcs","amount":55.35,"disc":0,"narration":"","id":"32c209b4"},{"itemName":"GI Box 5x5 (18G, 8M)","qty":1.0,"rate":61.49999999999999,"listRate":61.49999999999999,"netRate":61.49999999999999,"unit":"Pcs","amount":61.5,"disc":0,"narration":"","id":"18e0e01b"},{"itemName":"GI Box 8x6 (18G, 12M)","qty":1.0,"rate":82.0,"listRate":82.0,"netRate":82.0,"unit":"Pcs","amount":82.0,"disc":0,"narration":"","id":"a35e5489"},{"itemName":"GI Box 9x3 (18G, 8M)","qty":1.0,"rate":61.49999999999999,"listRate":61.49999999999999,"netRate":61.49999999999999,"unit":"Pcs","amount":61.5,"disc":0,"narration":"","id":"dbe790b3"}],"subtotal":846.74,"gstAmt":152.41,"grandTotal":999.15,"partyId":"36cedc0c","spId":"3d606b0f","shipTo":null},{"id":"004196cd","number":"PI-AL-2601-01","date":"2026-01-08","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium (1.6mm Thick)","qty":1.0,"rate":12.327,"listRate":12.327,"netRate":12.327,"unit":"Mtr","amount":12.33,"disc":0,"narration":"","id":"ecffd7dc"},{"itemName":"PVC Conduit Pipe 20mm Heavy (2mm Thick)","qty":1.0,"rate":15.792,"listRate":15.792,"netRate":15.792,"unit":"Mtr","amount":15.79,"disc":0,"narration":"","id":"64d5e84f"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":1.0,"rate":12.495,"listRate":12.495,"netRate":12.495,"unit":"Mtr","amount":12.49,"disc":0,"narration":"","id":"9f85e6e3"},{"itemName":"PVC Conduit Pipe 25mm Medium (1.6mm Thick)","qty":1.0,"rate":16.820999999999998,"listRate":16.820999999999998,"netRate":16.820999999999998,"unit":"Mtr","amount":16.82,"disc":0,"narration":"","id":"96d29219"},{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":1.0,"rate":20.328,"listRate":20.328,"netRate":20.328,"unit":"Mtr","amount":20.33,"disc":0,"narration":"","id":"2ab22063"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":1.0,"rate":16.422,"listRate":16.422,"netRate":16.422,"unit":"Mtr","amount":16.42,"disc":0,"narration":"","id":"8389a2c2"},{"itemName":"PVC Conduit Pipe 32mm Medium","qty":1.0,"rate":21.672,"listRate":21.672,"netRate":21.672,"unit":"Mtr","amount":21.67,"disc":0,"narration":"","id":"b8d69528"},{"itemName":"PVC Conduit Pipe 32mm Heavy","qty":1.0,"rate":25.137,"listRate":25.137,"netRate":25.137,"unit":"Mtr","amount":25.14,"disc":0,"narration":"","id":"0396ae23"},{"itemName":"PVC Bend 20mm Heavy","qty":1.0,"rate":4.473,"listRate":4.473,"netRate":4.473,"unit":"Pcs","amount":4.47,"disc":0,"narration":"","id":"0130623b"},{"itemName":"PVC Bend 25mm Heavy","qty":1.0,"rate":5.67,"listRate":5.67,"netRate":5.67,"unit":"Pcs","amount":5.67,"disc":0,"narration":"","id":"7dbf89d6"},{"itemName":"PVC Bend 32mm Heavy","qty":1.0,"rate":10.562999999999999,"listRate":10.562999999999999,"netRate":10.562999999999999,"unit":"Pcs","amount":10.56,"disc":0,"narration":"","id":"1c2cd700"},{"itemName":"PVC Surface J.Box 20mm 2way","qty":1.0,"rate":11.256,"listRate":11.256,"netRate":11.256,"unit":"Pcs","amount":11.26,"disc":0,"narration":"","id":"b06b86fb"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":1.0,"rate":12.537,"listRate":12.537,"netRate":12.537,"unit":"Pcs","amount":12.54,"disc":0,"narration":"","id":"7cff1367"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":1.0,"rate":13.082999999999998,"listRate":13.082999999999998,"netRate":13.082999999999998,"unit":"Pcs","amount":13.08,"disc":0,"narration":"","id":"1a12130a"},{"itemName":"PVC Surface J.Box 25mm 2way","qty":1.0,"rate":13.272,"listRate":13.272,"netRate":13.272,"unit":"Pcs","amount":13.27,"disc":0,"narration":"","id":"3f6a9372"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":1.0,"rate":15.350999999999999,"listRate":15.350999999999999,"netRate":15.350999999999999,"unit":"Pcs","amount":15.35,"disc":0,"narration":"","id":"32537218"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":1.0,"rate":17.955,"listRate":17.955,"netRate":17.955,"unit":"Pcs","amount":17.95,"disc":0,"narration":"","id":"8729584b"},{"itemName":"PVC Surface J.Box 32mm 2way","qty":1.0,"rate":23.247,"listRate":23.247,"netRate":23.247,"unit":"Pcs","amount":23.25,"disc":0,"narration":"","id":"ff166c81"},{"itemName":"PVC Surface J.Box 32mm 3way","qty":1.0,"rate":23.898,"listRate":23.898,"netRate":23.898,"unit":"Pcs","amount":23.9,"disc":0,"narration":"","id":"964648c9"},{"itemName":"PVC Surface J.Box 32mm 4way","qty":1.0,"rate":24.99,"listRate":24.99,"netRate":24.99,"unit":"Pcs","amount":24.99,"disc":0,"narration":"","id":"949701d9"},{"itemName":"PVC Deep J.Box 20mm 2way","qty":1.0,"rate":17.199,"listRate":17.199,"netRate":17.199,"unit":"Pcs","amount":17.2,"disc":0,"narration":"","id":"52a2eed5"},{"itemName":"PVC Deep J.Box 20mm 3way","qty":1.0,"rate":19.152,"listRate":19.152,"netRate":19.152,"unit":"Pcs","amount":19.15,"disc":0,"narration":"","id":"44f65b92"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":1.0,"rate":19.572,"listRate":19.572,"netRate":19.572,"unit":"Pcs","amount":19.57,"disc":0,"narration":"","id":"bdc14289"},{"itemName":"PVC Deep J.Box 25mm 2way","qty":1.0,"rate":20.118,"listRate":20.118,"netRate":20.118,"unit":"Pcs","amount":20.12,"disc":0,"narration":"","id":"40d291e0"},{"itemName":"PVC Deep J.Box 25mm 3way","qty":1.0,"rate":23.247,"listRate":23.247,"netRate":23.247,"unit":"Pcs","amount":23.25,"disc":0,"narration":"","id":"9a1cc91e"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":1.0,"rate":24.444,"listRate":24.444,"netRate":24.444,"unit":"Pcs","amount":24.44,"disc":0,"narration":"","id":"c4f1c4d4"},{"itemName":"PVC Deep J.Box 32mm 2way","qty":1.0,"rate":24.003,"listRate":24.003,"netRate":24.003,"unit":"Pcs","amount":24.0,"disc":0,"narration":"","id":"280dada5"},{"itemName":"PVC Deep J.Box 32mm 3way","qty":1.0,"rate":25.619999999999997,"listRate":25.619999999999997,"netRate":25.619999999999997,"unit":"Pcs","amount":25.62,"disc":0,"narration":"","id":"6e44af9f"},{"itemName":"PVC Deep J.Box 32mm 4way","qty":1.0,"rate":26.270999999999997,"listRate":26.270999999999997,"netRate":26.270999999999997,"unit":"Pcs","amount":26.27,"disc":0,"narration":"","id":"82b4fbc6"},{"itemName":"GI Box 3x3 (18G, 1-2M)","qty":1.0,"rate":26.65,"listRate":26.65,"netRate":26.65,"unit":"Pcs","amount":26.65,"disc":0,"narration":"","id":"f99fe67c"},{"itemName":"GI Box 4x3 (18G, 3M)","qty":1.0,"rate":32.8,"listRate":32.8,"netRate":32.8,"unit":"Pcs","amount":32.8,"disc":0,"narration":"","id":"139be44f"},{"itemName":"GI Box 5x3 (18G, 4M)","qty":1.0,"rate":38.949999999999996,"listRate":38.949999999999996,"netRate":38.949999999999996,"unit":"Pcs","amount":38.95,"disc":0,"narration":"","id":"21059b8f"},{"itemName":"GI Box 8x3 (18G, 6M)","qty":1.0,"rate":55.349999999999994,"listRate":55.349999999999994,"netRate":55.349999999999994,"unit":"Pcs","amount":55.35,"disc":0,"narration":"","id":"81df16f0"},{"itemName":"GI Box 5x5 (18G, 8M)","qty":1.0,"rate":61.49999999999999,"listRate":61.49999999999999,"netRate":61.49999999999999,"unit":"Pcs","amount":61.5,"disc":0,"narration":"","id":"c082ab00"},{"itemName":"GI Box 8x6 (18G, 12M)","qty":1.0,"rate":82.0,"listRate":82.0,"netRate":82.0,"unit":"Pcs","amount":82.0,"disc":0,"narration":"","id":"b22f42b9"},{"itemName":"GI Box 9x3 (18G, 8M)","qty":1.0,"rate":61.49999999999999,"listRate":61.49999999999999,"netRate":61.49999999999999,"unit":"Pcs","amount":61.5,"disc":0,"narration":"","id":"e93b4735"}],"subtotal":875.65,"gstAmt":157.62,"grandTotal":1033.27,"partyId":"36cedc0c","spId":"3d606b0f","shipTo":null},{"id":"b69c2ad2","number":"PI-AL-2603-01","date":"2026-03-18","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Solvent Pidilite","qty":20.0,"rate":220.0,"listRate":220.0,"netRate":220.0,"unit":"Pcs","amount":4400.0,"disc":0,"narration":"","id":"eed0f633"},{"itemName":"PVC Tape (R,Y,B,BL)","qty":5.0,"rate":210.0,"listRate":210.0,"netRate":210.0,"unit":"Pcs","amount":1050.0,"disc":0,"narration":"","id":"e1a84fe2"},{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":100.0,"rate":26.4,"listRate":26.4,"netRate":26.4,"unit":"Pcs","amount":2640.0,"disc":0,"narration":"","id":"b41d59a2"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":100.0,"rate":31.2,"listRate":31.2,"netRate":31.2,"unit":"Pcs","amount":3120.0,"disc":0,"narration":"","id":"be5c0f94"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":100.0,"rate":38.4,"listRate":38.4,"netRate":38.4,"unit":"Pcs","amount":3840.0,"disc":0,"narration":"","id":"7bf3682f"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":100.0,"rate":55.199999999999996,"listRate":55.199999999999996,"netRate":55.199999999999996,"unit":"Pcs","amount":5520.0,"disc":0,"narration":"","id":"720d2f96"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":100.0,"rate":86.39999999999999,"listRate":86.39999999999999,"netRate":86.39999999999999,"unit":"Pcs","amount":8640.0,"disc":0,"narration":"","id":"cc80fcbe"},{"itemName":"GI Box 9x3 (20G, 8M)","qty":100.0,"rate":62.4,"listRate":62.4,"netRate":62.4,"unit":"Pcs","amount":6240.0,"disc":0,"narration":"","id":"60fcfa58"}],"subtotal":35450.0,"gstAmt":6381.0,"grandTotal":41831.0,"partyId":"36cedc0c","spId":"3d606b0f","shipTo":null},{"id":"d1866b8b","number":"PI-AL-2512-01","date":"2025-12-09","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":5000.0,"rate":7.78,"listRate":7.78,"netRate":7.78,"unit":"Mtr","amount":38900.0,"disc":0,"narration":"","id":"9532017d"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":5000.0,"rate":10.64,"listRate":10.64,"netRate":10.64,"unit":"Mtr","amount":53200.0,"disc":0,"narration":"","id":"81926f5d"},{"itemName":"PVC Conduit Pipe 20mm Medium","qty":12000.0,"rate":9.42,"listRate":9.42,"netRate":9.42,"unit":"Mtr","amount":113040.0,"disc":0,"narration":"","id":"8bae0722"},{"itemName":"PVC Conduit Pipe 25mm Medium","qty":9000.0,"rate":13.14,"listRate":13.14,"netRate":13.14,"unit":"Mtr","amount":118260.0,"disc":0,"narration":"","id":"a46c973e"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":9000.0,"rate":11.9,"listRate":11.9,"netRate":11.9,"unit":"Mtr","amount":107100.0,"disc":0,"narration":"","id":"a5c22e5e"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":9000.0,"rate":15.64,"listRate":15.64,"netRate":15.64,"unit":"Mtr","amount":140760.0,"disc":0,"narration":"","id":"319399a3"},{"itemName":"GI Box 3x3 (18G, 1-2M)","qty":400.0,"rate":26.0,"listRate":26.0,"netRate":26.0,"unit":"Pcs","amount":10400.0,"disc":0,"narration":"","id":"ab88089d"},{"itemName":"GI Box 4x3 (18G, 3M)","qty":400.0,"rate":32.0,"listRate":32.0,"netRate":32.0,"unit":"Pcs","amount":12800.0,"disc":0,"narration":"","id":"42a1892e"},{"itemName":"GI Box 5x3 (18G, 4M)","qty":300.0,"rate":38.0,"listRate":38.0,"netRate":38.0,"unit":"Pcs","amount":11400.0,"disc":0,"narration":"","id":"358af716"},{"itemName":"GI Box 8x3 (18G, 6M)","qty":500.0,"rate":54.0,"listRate":54.0,"netRate":54.0,"unit":"Pcs","amount":27000.0,"disc":0,"narration":"","id":"3fa4d374"},{"itemName":"GI Box 5x5 (18G, 8M)","qty":300.0,"rate":60.0,"listRate":60.0,"netRate":60.0,"unit":"Pcs","amount":18000.0,"disc":0,"narration":"","id":"53f1bb36"},{"itemName":"GI Box 8x6 (18G, 12M)","qty":500.0,"rate":80.0,"listRate":80.0,"netRate":80.0,"unit":"Pcs","amount":40000.0,"disc":0,"narration":"","id":"8fafcfb0"},{"itemName":"GI Box 8x8 (18G, 18M)","qty":200.0,"rate":104.0,"listRate":104.0,"netRate":104.0,"unit":"Pcs","amount":20800.0,"disc":0,"narration":"","id":"89b255f6"},{"itemName":"PVC Batten 25×16mm","qty":2000.0,"rate":10.2,"listRate":10.2,"netRate":10.2,"unit":"Mtr","amount":20400.0,"disc":0,"narration":"","id":"e71f0e4f"},{"itemName":"PVC Batten 32×16mm","qty":3000.0,"rate":12.8,"listRate":12.8,"netRate":12.8,"unit":"Mtr","amount":38400.0,"disc":0,"narration":"","id":"f01d7ac0"},{"itemName":"SPN DB Box 6way","qty":48.0,"rate":411.6,"listRate":411.6,"netRate":411.6,"unit":"Pcs","amount":19756.8,"disc":0,"narration":"","id":"619775b6"},{"itemName":"SPN DB Box 8way","qty":48.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":22176.0,"disc":0,"narration":"","id":"f717d3d6"},{"itemName":"SPN DB Box 12way","qty":48.0,"rate":562.8,"listRate":562.8,"netRate":562.8,"unit":"Pcs","amount":27014.4,"disc":0,"narration":"","id":"db8d3373"},{"itemName":"SPN DB Box 16way","qty":24.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":15926.4,"disc":0,"narration":"","id":"b3a6d850"},{"itemName":"Concealed Box (2\")","qty":1000.0,"rate":28.0,"listRate":28.0,"netRate":28.0,"unit":"Pcs","amount":28000.0,"disc":0,"narration":"","id":"055a3e6f"}],"subtotal":883333.6,"gstAmt":159000.05,"grandTotal":1042333.65,"partyId":"19ad8fdf","spId":"3d606b0f","shipTo":null},{"id":"fa22057f","number":"PI-AL-2512-02","date":"2025-12-16","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":5000.0,"rate":7.78,"listRate":7.78,"netRate":7.78,"unit":"Mtr","amount":38900.0,"disc":0,"narration":"","id":"1fc362a3"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":5000.0,"rate":10.64,"listRate":10.64,"netRate":10.64,"unit":"Mtr","amount":53200.0,"disc":0,"narration":"","id":"cfa97030"},{"itemName":"PVC Conduit Pipe 20mm Medium","qty":12000.0,"rate":9.42,"listRate":9.42,"netRate":9.42,"unit":"Mtr","amount":113040.0,"disc":0,"narration":"","id":"2e9ff6d5"},{"itemName":"PVC Conduit Pipe 25mm Medium","qty":9000.0,"rate":13.14,"listRate":13.14,"netRate":13.14,"unit":"Mtr","amount":118260.0,"disc":0,"narration":"","id":"895b628e"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":9000.0,"rate":11.9,"listRate":11.9,"netRate":11.9,"unit":"Mtr","amount":107100.0,"disc":0,"narration":"","id":"ac4f35b6"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":9000.0,"rate":15.64,"listRate":15.64,"netRate":15.64,"unit":"Mtr","amount":140760.0,"disc":0,"narration":"","id":"498c6d79"},{"itemName":"GI Box 3x3 (20G, 1-2M)","qty":400.0,"rate":22.0,"listRate":22.0,"netRate":22.0,"unit":"Pcs","amount":8800.0,"disc":0,"narration":"","id":"d3c27864"},{"itemName":"GI Box 4x3 (20G, 3M)","qty":400.0,"rate":26.0,"listRate":26.0,"netRate":26.0,"unit":"Pcs","amount":10400.0,"disc":0,"narration":"","id":"ba560944"},{"itemName":"GI Box 5x3 (20G, 4M)","qty":300.0,"rate":32.0,"listRate":32.0,"netRate":32.0,"unit":"Pcs","amount":9600.0,"disc":0,"narration":"","id":"230e218f"},{"itemName":"GI Box 8x3 (20G, 6M)","qty":500.0,"rate":46.0,"listRate":46.0,"netRate":46.0,"unit":"Pcs","amount":23000.0,"disc":0,"narration":"","id":"a4757010"},{"itemName":"GI Box 5x5 (20G, 8M)","qty":300.0,"rate":52.0,"listRate":52.0,"netRate":52.0,"unit":"Pcs","amount":15600.0,"disc":0,"narration":"","id":"c652cd31"},{"itemName":"GI Box 8x6 (20G, 12M)","qty":500.0,"rate":80.0,"listRate":80.0,"netRate":80.0,"unit":"Pcs","amount":40000.0,"disc":0,"narration":"","id":"7befcde4"},{"itemName":"GI Box 8x8 (20G, 18M)","qty":200.0,"rate":88.0,"listRate":88.0,"netRate":88.0,"unit":"Pcs","amount":17600.0,"disc":0,"narration":"","id":"c9059ba4"},{"itemName":"PVC Batten 25×16mm","qty":2000.0,"rate":10.2,"listRate":10.2,"netRate":10.2,"unit":"Mtr","amount":20400.0,"disc":0,"narration":"","id":"edf82521"},{"itemName":"PVC Batten 32×16mm","qty":3000.0,"rate":12.8,"listRate":12.8,"netRate":12.8,"unit":"Mtr","amount":38400.0,"disc":0,"narration":"","id":"e2bf17a5"},{"itemName":"SPN DB Box 6way","qty":48.0,"rate":385.0,"listRate":385.0,"netRate":385.0,"unit":"Pcs","amount":18480.0,"disc":0,"narration":"","id":"5595a62f"},{"itemName":"SPN DB Box 8way","qty":48.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":22176.0,"disc":0,"narration":"","id":"6bcd58b2"},{"itemName":"SPN DB Box 12way","qty":48.0,"rate":537.0,"listRate":537.0,"netRate":537.0,"unit":"Pcs","amount":25776.0,"disc":0,"narration":"","id":"89f787c0"},{"itemName":"SPN DB Box 16way","qty":24.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":15926.4,"disc":0,"narration":"","id":"a40293f9"},{"itemName":"Concealed Box (2\")","qty":1000.0,"rate":27.0,"listRate":27.0,"netRate":27.0,"unit":"Pcs","amount":27000.0,"disc":0,"narration":"","id":"745dbc37"}],"subtotal":864418.4,"gstAmt":155595.31,"grandTotal":1020013.71,"partyId":"19ad8fdf","spId":"3d606b0f","shipTo":null},{"id":"7c03bd56","number":"PI-AL-2601-03","date":"2026-01-03","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium","qty":3000.0,"rate":9.42,"listRate":9.42,"netRate":9.42,"unit":"Mtr","amount":28260.0,"disc":0,"narration":"","id":"19c1bb2c"},{"itemName":"PVC Conduit Pipe 25mm Medium","qty":3000.0,"rate":13.14,"listRate":13.14,"netRate":13.14,"unit":"Mtr","amount":39420.0,"disc":0,"narration":"","id":"983ad47d"},{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":2250.0,"rate":11.9,"listRate":11.9,"netRate":11.9,"unit":"Mtr","amount":26775.0,"disc":0,"narration":"","id":"9cb798ed"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":2250.0,"rate":15.64,"listRate":15.64,"netRate":15.64,"unit":"Mtr","amount":35190.0,"disc":0,"narration":"","id":"a986c1d8"},{"itemName":"PVC Bend 20mm Heavy","qty":1240.0,"rate":4.26,"listRate":4.26,"netRate":4.26,"unit":"Pcs","amount":5282.4,"disc":0,"narration":"","id":"7c8beaa4"},{"itemName":"PVC Bend 25mm Heavy","qty":1240.0,"rate":5.4,"listRate":5.4,"netRate":5.4,"unit":"Pcs","amount":6696.0,"disc":0,"narration":"","id":"7f831beb"},{"itemName":"PVC Batten 25×16mm","qty":1000.0,"rate":10.2,"listRate":10.2,"netRate":10.2,"unit":"Mtr","amount":10200.0,"disc":0,"narration":"","id":"b91687a3"},{"itemName":"PVC Batten 32×16mm","qty":1200.0,"rate":12.8,"listRate":12.8,"netRate":12.8,"unit":"Mtr","amount":15360.0,"disc":0,"narration":"","id":"fe49f30f"},{"itemName":"SPN DB Box 6way","qty":10.0,"rate":385.0,"listRate":385.0,"netRate":385.0,"unit":"Pcs","amount":3850.0,"disc":0,"narration":"","id":"1a9df52a"},{"itemName":"SPN DB Box 8way","qty":12.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":5544.0,"disc":0,"narration":"","id":"ffeae5c2"},{"itemName":"SPN DB Box 12way","qty":12.0,"rate":537.0,"listRate":537.0,"netRate":537.0,"unit":"Pcs","amount":6444.0,"disc":0,"narration":"","id":"aef59e43"},{"itemName":"SPN DB Box 16way","qty":6.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":3981.6,"disc":0,"narration":"","id":"1e39f43e"},{"itemName":"Concealed Box (2\") 200gm","qty":500.0,"rate":27.0,"listRate":27.0,"netRate":27.0,"unit":"Pcs","amount":13500.0,"disc":0,"narration":"","id":"c3245b6d"}],"subtotal":200503.0,"gstAmt":36090.54,"grandTotal":236593.54,"partyId":"19ad8fdf","spId":"3d606b0f","shipTo":null},{"id":"9f259297","number":"PI-AL-2601-04","date":"2026-01-08","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium (1.6mm Medium)","qty":3000.0,"rate":12.33,"listRate":12.33,"netRate":12.33,"unit":"Mtr","amount":36990.0,"disc":0,"narration":"","id":"67a73c04"},{"itemName":"PVC Conduit Pipe 25mm Medium (1.6mm Medium)","qty":3000.0,"rate":16.82,"listRate":16.82,"netRate":16.82,"unit":"Mtr","amount":50460.0,"disc":0,"narration":"","id":"bd0de738"},{"itemName":"PVC Conduit Pipe 20mm Heavy (2mm Thick)","qty":2250.0,"rate":15.79,"listRate":15.79,"netRate":15.79,"unit":"Mtr","amount":35527.5,"disc":0,"narration":"","id":"76aa14e6"},{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":2250.0,"rate":20.33,"listRate":20.33,"netRate":20.33,"unit":"Mtr","amount":45742.5,"disc":0,"narration":"","id":"c7c15c0d"},{"itemName":"PVC Bend 20mm Heavy","qty":1240.0,"rate":4.47,"listRate":4.47,"netRate":4.47,"unit":"Pcs","amount":5542.8,"disc":0,"narration":"","id":"f577a7c7"},{"itemName":"PVC Bend 25mm Heavy","qty":1240.0,"rate":5.67,"listRate":5.67,"netRate":5.67,"unit":"Pcs","amount":7030.8,"disc":0,"narration":"","id":"bf378f0c"},{"itemName":"PVC Batten 25×16mm","qty":1000.0,"rate":10.2,"listRate":10.2,"netRate":10.2,"unit":"Mtr","amount":10200.0,"disc":0,"narration":"","id":"7ce7240e"},{"itemName":"PVC Batten 32×16mm","qty":1200.0,"rate":12.8,"listRate":12.8,"netRate":12.8,"unit":"Mtr","amount":15360.0,"disc":0,"narration":"","id":"a4f92b02"},{"itemName":"SPN DB Box 6way","qty":10.0,"rate":385.0,"listRate":385.0,"netRate":385.0,"unit":"Pcs","amount":3850.0,"disc":0,"narration":"","id":"ba3561d4"},{"itemName":"SPN DB Box 8way","qty":12.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":5544.0,"disc":0,"narration":"","id":"4380fe68"},{"itemName":"SPN DB Box 12way","qty":12.0,"rate":537.0,"listRate":537.0,"netRate":537.0,"unit":"Pcs","amount":6444.0,"disc":0,"narration":"","id":"5bac4d47"},{"itemName":"SPN DB Box 16way","qty":6.0,"rate":663.6,"listRate":663.6,"netRate":663.6,"unit":"Pcs","amount":3981.6,"disc":0,"narration":"","id":"860765e4"},{"itemName":"Concealed Box (2\") 200gm","qty":500.0,"rate":27.0,"listRate":27.0,"netRate":27.0,"unit":"Pcs","amount":13500.0,"disc":0,"narration":"","id":"943ebbde"}],"subtotal":240173.2,"gstAmt":43231.18,"grandTotal":283404.38,"partyId":"19ad8fdf","spId":"3d606b0f","shipTo":null},{"id":"b51fd0fd","number":"PI-AL-2512-01","date":"2025-12-04","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":50.0,"rate":1003.62,"listRate":1003.62,"netRate":1003.62,"unit":"Bundle","amount":50181.0,"disc":0,"narration":"","id":"ee0c7480"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":50.0,"rate":857.85,"listRate":857.85,"netRate":857.85,"unit":"Bundle","amount":42892.5,"disc":0,"narration":"","id":"1fc268ad"},{"itemName":"PVC Bend 20mm Medium (60Doz×2Bag)","qty":120.0,"rate":42.31,"listRate":42.31,"netRate":42.31,"unit":"Doz","amount":5077.2,"disc":0,"narration":"","id":"27d040bb"},{"itemName":"PVC Bend 25mm Medium (40Doz×3Bag)","qty":120.0,"rate":58.82,"listRate":58.82,"netRate":58.82,"unit":"Doz","amount":7058.4,"disc":0,"narration":"","id":"45fd502b"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":504.0,"rate":12.84,"listRate":12.84,"netRate":12.84,"unit":"Pcs","amount":6471.36,"disc":0,"narration":"","id":"320b9a39"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":504.0,"rate":15.72,"listRate":15.72,"netRate":15.72,"unit":"Pcs","amount":7922.88,"disc":0,"narration":"","id":"69c53358"},{"itemName":"DB SPN 8way","qty":200.0,"rate":462.0,"listRate":462.0,"netRate":462.0,"unit":"Pcs","amount":92400.0,"disc":0,"narration":"","id":"a01f15ba"},{"itemName":"DB SPN 10way","qty":100.0,"rate":512.4,"listRate":512.4,"netRate":512.4,"unit":"Pcs","amount":51240.0,"disc":0,"narration":"","id":"ba9099d1"}],"subtotal":263243.34,"gstAmt":47383.8,"grandTotal":310627.14,"partyId":"a8012e67","spId":"3d606b0f","shipTo":null},{"id":"101c4276","number":"PI-AL-2601-02","date":"2026-01-08","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Heavy (2mm Thick)","qty":9000.0,"rate":15.79,"listRate":15.79,"netRate":15.79,"unit":"Mtr","amount":142110.0,"disc":0,"narration":"","id":"f470d6e1"},{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":21000.0,"rate":20.33,"listRate":20.33,"netRate":20.33,"unit":"Mtr","amount":426930.0,"disc":0,"narration":"","id":"002cee00"},{"itemName":"PVC Bend 20mm Heavy","qty":2000.0,"rate":4.47,"listRate":4.47,"netRate":4.47,"unit":"Pcs","amount":8940.0,"disc":0,"narration":"","id":"2de95675"},{"itemName":"PVC Bend 25mm Heavy","qty":4000.0,"rate":5.67,"listRate":5.67,"netRate":5.67,"unit":"Pcs","amount":22680.0,"disc":0,"narration":"","id":"4e9a2fb9"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":2000.0,"rate":19.57,"listRate":19.57,"netRate":19.57,"unit":"Pcs","amount":39140.0,"disc":0,"narration":"","id":"b263ac56"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":4000.0,"rate":24.44,"listRate":24.44,"netRate":24.44,"unit":"Pcs","amount":97760.0,"disc":0,"narration":"","id":"1f3e752d"}],"subtotal":737560.0,"gstAmt":132760.8,"grandTotal":870320.8,"partyId":"a8012e67","spId":"3d606b0f","shipTo":null},{"id":"c872d2dd","number":"PI-AL-2603-03","date":"2026-03-24","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":18000.0,"rate":10.634,"listRate":10.634,"netRate":10.634,"unit":"Mtr","amount":191412.0,"disc":0,"narration":"","id":"6034ee68"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":12000.0,"rate":15.964,"listRate":15.964,"netRate":15.964,"unit":"Mtr","amount":191568.0,"disc":0,"narration":"","id":"d80be039"},{"itemName":"PVC Bend 20mm Heavy","qty":2004.0,"rate":5.798,"listRate":5.798,"netRate":5.798,"unit":"Pcs","amount":11619.19,"disc":0,"narration":"","id":"52ad0a86"},{"itemName":"PVC Bend 25mm Heavy","qty":2508.0,"rate":7.3580000000000005,"listRate":7.3580000000000005,"netRate":7.3580000000000005,"unit":"Pcs","amount":18453.86,"disc":0,"narration":"","id":"9773d2eb"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":1500.0,"rate":16.276,"listRate":16.276,"netRate":16.276,"unit":"Pcs","amount":24414.0,"disc":0,"narration":"","id":"c426cb0a"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":1500.0,"rate":16.952,"listRate":16.952,"netRate":16.952,"unit":"Pcs","amount":25428.0,"disc":0,"narration":"","id":"f0dd3952"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":1500.0,"rate":19.916,"listRate":19.916,"netRate":19.916,"unit":"Pcs","amount":29874.0,"disc":0,"narration":"","id":"422b4b49"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":1500.0,"rate":23.296,"listRate":23.296,"netRate":23.296,"unit":"Pcs","amount":34944.0,"disc":0,"narration":"","id":"e7d3cc87"}],"subtotal":527713.05,"gstAmt":94988.35,"grandTotal":622701.4,"partyId":"a8012e67","spId":"3d606b0f","shipTo":null},{"id":"a7be1498","number":"PI-AL-2603-04","date":"2026-03-24","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":9000.0,"rate":16.77,"listRate":16.77,"netRate":16.77,"unit":"Mtr","amount":150930.0,"disc":0,"narration":"","id":"53e7762e"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":21000.0,"rate":22.178,"listRate":22.178,"netRate":22.178,"unit":"Mtr","amount":465738.0,"disc":0,"narration":"","id":"62dea28e"},{"itemName":"PVC Bend 20mm Heavy","qty":2500.0,"rate":5.798,"listRate":5.798,"netRate":5.798,"unit":"Pcs","amount":14495.0,"disc":0,"narration":"","id":"eb5b48a6"},{"itemName":"PVC Bend 25mm Heavy","qty":4500.0,"rate":7.3580000000000005,"listRate":7.3580000000000005,"netRate":7.3580000000000005,"unit":"Pcs","amount":33111.0,"disc":0,"narration":"","id":"88b844f3"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":1250.0,"rate":25.428,"listRate":25.428,"netRate":25.428,"unit":"Pcs","amount":31785.0,"disc":0,"narration":"","id":"ae233160"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":3000.0,"rate":31.772000000000002,"listRate":31.772000000000002,"netRate":31.772000000000002,"unit":"Pcs","amount":95316.0,"disc":0,"narration":"","id":"38415ebe"},{"itemName":"PVC Solvent Pidiliite","qty":20.0,"rate":220.0,"listRate":220.0,"netRate":220.0,"unit":"Pcs","amount":4400.0,"disc":0,"narration":"","id":"0dfac15f"}],"subtotal":795775.0,"gstAmt":143239.5,"grandTotal":939014.5,"partyId":"a8012e67","spId":"3d606b0f","shipTo":null},{"id":"fa542e2f","number":"PI-AL-2603-05","date":"2026-03-26","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Light","qty":24000.0,"rate":10.63,"listRate":10.63,"netRate":10.63,"unit":"Mtr","amount":255120.0,"disc":0,"narration":"","id":"cfc97bbd"},{"itemName":"PVC Conduit Pipe 25mm Light","qty":16050.0,"rate":15.96,"listRate":15.96,"netRate":15.96,"unit":"Mtr","amount":256158.0,"disc":0,"narration":"","id":"637a9376"},{"itemName":"PVC Bend 20mm Heavy","qty":4008.0,"rate":5.8,"listRate":5.8,"netRate":5.8,"unit":"Pcs","amount":23246.4,"disc":0,"narration":"","id":"183c5512"},{"itemName":"PVC Bend 25mm Heavy","qty":5004.0,"rate":7.36,"listRate":7.36,"netRate":7.36,"unit":"Pcs","amount":36829.44,"disc":0,"narration":"","id":"1e3ce36a"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":2004.0,"rate":16.28,"listRate":16.28,"netRate":16.28,"unit":"Pcs","amount":32625.12,"disc":0,"narration":"","id":"de561cef"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":2004.0,"rate":16.95,"listRate":16.95,"netRate":16.95,"unit":"Pcs","amount":33967.8,"disc":0,"narration":"","id":"3887538f"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":2004.0,"rate":19.92,"listRate":19.92,"netRate":19.92,"unit":"Pcs","amount":39919.68,"disc":0,"narration":"","id":"b8194b9e"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":2004.0,"rate":23.3,"listRate":23.3,"netRate":23.3,"unit":"Pcs","amount":46693.2,"disc":0,"narration":"","id":"d5d1b10d"}],"subtotal":724559.64,"gstAmt":130420.74,"grandTotal":854980.38,"partyId":"a8012e67","spId":"3d606b0f","shipTo":null},{"id":"894d5f03","number":"PI-AL-2603-06","date":"2026-03-26","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Heavy","qty":13080.0,"rate":16.77,"listRate":16.77,"netRate":16.77,"unit":"Mtr","amount":219351.6,"disc":0,"narration":"","id":"6ae601a2"},{"itemName":"PVC Conduit Pipe 25mm Heavy","qty":25050.0,"rate":22.178,"listRate":22.178,"netRate":22.178,"unit":"Mtr","amount":555558.9,"disc":0,"narration":"","id":"32a3d0e5"},{"itemName":"PVC Bend 20mm Heavy","qty":3504.0,"rate":5.798,"listRate":5.798,"netRate":5.798,"unit":"Pcs","amount":20316.19,"disc":0,"narration":"","id":"8d0d708c"},{"itemName":"PVC Bend 25mm Heavy","qty":4008.0,"rate":7.3580000000000005,"listRate":7.3580000000000005,"netRate":7.3580000000000005,"unit":"Pcs","amount":29490.86,"disc":0,"narration":"","id":"c4ed7c4f"},{"itemName":"PVC Deep J.Box 20mm 4way","qty":1500.0,"rate":25.428,"listRate":25.428,"netRate":25.428,"unit":"Pcs","amount":38142.0,"disc":0,"narration":"","id":"df6f2d75"},{"itemName":"PVC Deep J.Box 25mm 4way","qty":3000.0,"rate":31.772000000000002,"listRate":31.772000000000002,"netRate":31.772000000000002,"unit":"Pcs","amount":95316.0,"disc":0,"narration":"","id":"824fb843"},{"itemName":"PVC Solvent Pidiliite","qty":20.0,"rate":220.0,"listRate":220.0,"netRate":220.0,"unit":"Pcs","amount":4400.0,"disc":0,"narration":"","id":"178446be"},{"itemName":"PVC Tape","qty":60.0,"rate":7.0,"listRate":7.0,"netRate":7.0,"unit":"Pcs","amount":420.0,"disc":0,"narration":"","id":"e6f5459c"}],"subtotal":962995.55,"gstAmt":173339.2,"grandTotal":1136334.75,"partyId":"a8012e67","spId":"3d606b0f","shipTo":null},{"id":"a2fbb748","number":"PI-AL-2601-01","date":"2026-01-15","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Heavy (2mm Thick)","qty":2500.0,"rate":15.04,"listRate":15.04,"netRate":15.04,"unit":"Mtr","amount":37600.0,"disc":0,"narration":"","id":"9aa55672"},{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":4000.0,"rate":19.36,"listRate":19.36,"netRate":19.36,"unit":"Mtr","amount":77440.0,"disc":0,"narration":"","id":"e1e98829"},{"itemName":"Fan Box","qty":400.0,"rate":75.0,"listRate":75.0,"netRate":75.0,"unit":"Pcs","amount":30000.0,"disc":0,"narration":"","id":"094eb793"},{"itemName":"Fan Box (1.6mm Thick)","qty":1.0,"rate":125.0,"listRate":125.0,"netRate":125.0,"unit":"Pcs","amount":125.0,"disc":0,"narration":"","id":"675c8023"}],"subtotal":145165.0,"gstAmt":26129.7,"grandTotal":171294.7,"partyId":"8e021ce2","spId":"3d606b0f","shipTo":null},{"id":"c386f371","number":"PI-AL-2601-01","date":"2026-01-16","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Heavy (2mm Thick)","qty":3000.0,"rate":16.168,"listRate":16.168,"netRate":16.168,"unit":"Mtr","amount":48504.0,"disc":0,"narration":"","id":"3da7b292"},{"itemName":"PVC Conduit Pipe 25mm Heavy (2mm Thick)","qty":2000.0,"rate":20.81,"listRate":20.81,"netRate":20.81,"unit":"Mtr","amount":41620.0,"disc":0,"narration":"","id":"58f51d3a"},{"itemName":"PVC Bend 20mm Heavy","qty":1000.0,"rate":4.58,"listRate":4.58,"netRate":4.58,"unit":"Pcs","amount":4580.0,"disc":0,"narration":"","id":"a8127c6c"},{"itemName":"PVC Bend 25mm Heavy","qty":1000.0,"rate":5.81,"listRate":5.81,"netRate":5.81,"unit":"Pcs","amount":5810.0,"disc":0,"narration":"","id":"1f0166e3"},{"itemName":"PVC Deep J.Box 20mm 3way","qty":200.0,"rate":19.608,"listRate":19.608,"netRate":19.608,"unit":"Pcs","amount":3921.6,"disc":0,"narration":"","id":"85d43286"},{"itemName":"PVC Deep J.Box 25mm 3way","qty":200.0,"rate":23.8005,"listRate":23.8005,"netRate":23.8005,"unit":"Pcs","amount":4760.1,"disc":0,"narration":"","id":"6370fbdd"}],"subtotal":109195.7,"gstAmt":19655.23,"grandTotal":128850.93,"partyId":"5810d751","spId":"3d606b0f","shipTo":null},{"id":"deb56bbe","number":"PI-AL-2602-01","date":"2026-02-13","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium","qty":9903.0,"rate":10.965,"listRate":10.965,"netRate":10.965,"unit":"Mtr","amount":108586.4,"disc":0,"narration":"","id":"732f4729"},{"itemName":"PVC Conduit Pipe 25mm Medium","qty":5415.0,"rate":15.437,"listRate":15.437,"netRate":15.437,"unit":"Mtr","amount":83591.35,"disc":0,"narration":"","id":"dc125fbf"},{"itemName":"PVC Flexible Pipe 20mm","qty":20.0,"rate":120.0,"listRate":120.0,"netRate":120.0,"unit":"Roll","amount":2400.0,"disc":0,"narration":"","id":"aa75589f"},{"itemName":"PVC Surface J.Box 20mm 1way","qty":361.0,"rate":11.8465,"listRate":11.8465,"netRate":11.8465,"unit":"Mtr","amount":4276.59,"disc":0,"narration":"","id":"56feb5e4"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":300.0,"rate":13.459,"listRate":13.459,"netRate":13.459,"unit":"Mtr","amount":4037.7,"disc":0,"narration":"","id":"5920654e"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":172.0,"rate":14.018,"listRate":14.018,"netRate":14.018,"unit":"Mtr","amount":2411.1,"disc":0,"narration":"","id":"5205e62b"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":321.0,"rate":16.468999999999998,"listRate":16.468999999999998,"netRate":16.468999999999998,"unit":"Mtr","amount":5286.55,"disc":0,"narration":"","id":"76b0f919"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":127.0,"rate":19.264,"listRate":19.264,"netRate":19.264,"unit":"Mtr","amount":2446.53,"disc":0,"narration":"","id":"4c4376d7"},{"itemName":"PVC Bend 20mm Medium","qty":1650.0,"rate":3.7409999999999997,"listRate":3.7409999999999997,"netRate":3.7409999999999997,"unit":"Pcs","amount":6172.65,"disc":0,"narration":"","id":"a421b1ff"},{"itemName":"PVC Bend 25mm Medium","qty":902.0,"rate":5.1385,"listRate":5.1385,"netRate":5.1385,"unit":"Pcs","amount":4634.93,"disc":0,"narration":"","id":"94203c80"},{"itemName":"PVC Gitti 35mm (50Pcs/Pkt)","qty":35.0,"rate":25.0,"listRate":25.0,"netRate":25.0,"unit":"Pcs","amount":875.0,"disc":0,"narration":"","id":"c25acd0b"},{"itemName":"Wooden Screw 25x8 (100Pcs/Pkt)","qty":6.0,"rate":50.0,"listRate":50.0,"netRate":50.0,"unit":"Pcs","amount":300.0,"disc":0,"narration":"","id":"c9970108"},{"itemName":"Wooden Screw 35x8 (100Pcs/Pkt)","qty":7.0,"rate":55.0,"listRate":55.0,"netRate":55.0,"unit":"Pcs","amount":385.0,"disc":0,"narration":"","id":"fed0d988"}],"subtotal":225403.8,"gstAmt":40572.68,"grandTotal":265976.48,"partyId":"cafeeaf4","spId":"3d606b0f","shipTo":null},{"id":"ba190542","number":"PI-AL-2602-02","date":"2026-02-13","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium","qty":9903.0,"rate":10.965,"listRate":10.965,"netRate":10.965,"unit":"Mtr","amount":108586.4,"disc":0,"narration":"","id":"958997c4"},{"itemName":"PVC Conduit Pipe 25mm Medium","qty":5415.0,"rate":15.437,"listRate":15.437,"netRate":15.437,"unit":"Mtr","amount":83591.35,"disc":0,"narration":"","id":"6249b93c"},{"itemName":"PVC Flexible Pipe 20mm","qty":20.0,"rate":120.0,"listRate":120.0,"netRate":120.0,"unit":"Roll","amount":2400.0,"disc":0,"narration":"","id":"fe290ab1"},{"itemName":"PVC Surface J.Box 20mm 1way","qty":361.0,"rate":11.8465,"listRate":11.8465,"netRate":11.8465,"unit":"Mtr","amount":4276.59,"disc":0,"narration":"","id":"327f9734"},{"itemName":"PVC Surface J.Box 20mm 3way","qty":300.0,"rate":13.459,"listRate":13.459,"netRate":13.459,"unit":"Mtr","amount":4037.7,"disc":0,"narration":"","id":"f955cd5d"},{"itemName":"PVC Surface J.Box 20mm 4way","qty":172.0,"rate":14.018,"listRate":14.018,"netRate":14.018,"unit":"Mtr","amount":2411.1,"disc":0,"narration":"","id":"f5b16425"},{"itemName":"PVC Surface J.Box 25mm 3way","qty":321.0,"rate":16.468999999999998,"listRate":16.468999999999998,"netRate":16.468999999999998,"unit":"Mtr","amount":5286.55,"disc":0,"narration":"","id":"71938abb"},{"itemName":"PVC Surface J.Box 25mm 4way","qty":127.0,"rate":19.264,"listRate":19.264,"netRate":19.264,"unit":"Mtr","amount":2446.53,"disc":0,"narration":"","id":"c1cd91b3"},{"itemName":"PVC Bend 20mm Medium","qty":1650.0,"rate":3.7409999999999997,"listRate":3.7409999999999997,"netRate":3.7409999999999997,"unit":"Pcs","amount":6172.65,"disc":0,"narration":"","id":"948b866a"},{"itemName":"PVC Bend 25mm Medium","qty":902.0,"rate":5.1385,"listRate":5.1385,"netRate":5.1385,"unit":"Pcs","amount":4634.93,"disc":0,"narration":"","id":"b3a1397b"},{"itemName":"PVC Gitti 35mm (50Pcs/Pkt)","qty":35.0,"rate":25.0,"listRate":25.0,"netRate":25.0,"unit":"Pcs","amount":875.0,"disc":0,"narration":"","id":"ecdf1253"},{"itemName":"Wooden Screw 25x8 (100Pcs/Pkt)","qty":6.0,"rate":50.0,"listRate":50.0,"netRate":50.0,"unit":"Pcs","amount":300.0,"disc":0,"narration":"","id":"6c7bd59a"},{"itemName":"Wooden Screw 35x8 (100Pcs/Pkt)","qty":7.0,"rate":55.0,"listRate":55.0,"netRate":55.0,"unit":"Pcs","amount":385.0,"disc":0,"narration":"","id":"dbbed9a3"}],"subtotal":225403.8,"gstAmt":40572.68,"grandTotal":265976.48,"partyId":"cafeeaf4","spId":"3d606b0f","shipTo":null},{"id":"001ba400","number":"PI-AL-2604-03","date":"2026-04-01","validTill":"","subject":"Supply of PVC Conduit Pipes & Fittings","notes":"Price: Ex Unit\nPayment: Advance\nFreight: FoR\nDelivery: 2-3 Days\nValidity: 7 Days\nContact: Alok Singh (9661510467)","discount":0,"showDiscInPDF":false,"items":[{"itemName":"PVC Conduit Pipe 20mm Medium (1.6mm Thick)","qty":9000.0,"rate":16.02,"listRate":16.02,"netRate":16.02,"unit":"Mtr","amount":144180.0,"disc":0,"narration":"","id":"07103ddb"},{"itemName":"PVC Conduit Pipe 25mm Medium (1.6mm Thick)","qty":9000.0,"rate":21.37,"listRate":21.37,"netRate":21.37,"unit":"Mtr","amount":192330.0,"disc":0,"narration":"","id":"3551ba21"},{"itemName":"PVC Conduit Pipe 32mm Medium","qty":4500.0,"rate":29.54,"listRate":29.54,"netRate":29.54,"unit":"Mtr","amount":132930.0,"disc":0,"narration":"","id":"64330c41"},{"itemName":"PVC Conduit Pipe 40mm Medium","qty":4500.0,"rate":39.34,"listRate":39.34,"netRate":39.34,"unit":"Mtr","amount":177030.0,"disc":0,"narration":"","id":"452dacfb"},{"itemName":"PVC Bend 20mm Heavy","qty":2500.0,"rate":5.8,"listRate":5.8,"netRate":5.8,"unit":"Pcs","amount":14500.0,"disc":0,"narration":"","id":"e8528745"},{"itemName":"PVC Bend 25mm Heavy","qty":2500.0,"rate":7.36,"listRate":7.36,"netRate":7.36,"unit":"Pcs","amount":18400.0,"disc":0,"narration":"","id":"9485fc4e"},{"itemName":"PVC Bend 32mm Heavy","qty":100.0,"rate":13.7,"listRate":13.7,"netRate":13.7,"unit":"Pcs","amount":1370.0,"disc":0,"narration":"","id":"059d81af"},{"itemName":"PVC Bend 40mm Heavy","qty":100.0,"rate":20.54,"listRate":20.54,"netRate":20.54,"unit":"Pcs","amount":2054.0,"disc":0,"narration":"","id":"f9b514c4"},{"itemName":"PVC Surface J.Box 20mm","qty":120.0,"rate":16.95,"listRate":16.95,"netRate":16.95,"unit":"Pcs","amount":2034.0,"disc":0,"narration":"","id":"b5f6a965"},{"itemName":"PVC Surface J.Box 25mm","qty":1200.0,"rate":23.3,"listRate":23.3,"netRate":23.3,"unit":"Pcs","amount":27960.0,"disc":0,"narration":"","id":"9e147d05"},{"itemName":"PVC Deep J.Box 20mm","qty":100.0,"rate":25.43,"listRate":25.43,"netRate":25.43,"unit":"Pcs","amount":2543.0,"disc":0,"narration":"","id":"620cf75d"},{"itemName":"PVC Deep J.Box 25mm","qty":1500.0,"rate":31.77,"listRate":31.77,"netRate":31.77,"unit":"Pcs","amount":47655.0,"disc":0,"narration":"","id":"af18bce1"},{"itemName":"PVC Socket 20mm","qty":480.0,"rate":3.38,"listRate":3.38,"netRate":3.38,"unit":"Pcs","amount":1622.4,"disc":0,"narration":"","id":"d141e3c2"},{"itemName":"PVC Socket 25mm","qty":480.0,"rate":4.52,"listRate":4.52,"netRate":4.52,"unit":"Pcs","amount":2169.6,"disc":0,"narration":"","id":"698b7d77"},{"itemName":"PVC Saddle 20mm","qty":1000.0,"rate":1.6,"listRate":1.6,"netRate":1.6,"unit":"Pcs","amount":1600.0,"disc":0,"narration":"","id":"973a590e"},{"itemName":"PVC Saddle 25mm","qty":1000.0,"rate":1.8,"listRate":1.8,"netRate":1.8,"unit":"Pcs","amount":1800.0,"disc":0,"narration":"","id":"54add899"}],"subtotal":770178.0,"gstAmt":138632.04,"grandTotal":908810.04,"partyId":"cafeeaf4","spId":"3d606b0f","shipTo":null}]};
+
+const DEFAULT_CO={
+  name:'ATUL INDUSTRIES',
+  address:'F-04, Site-C, Surajpur Indl. Area',
+  city:'Greater Noida',state:'Uttar Pradesh',pin:'201306',
+  gstin:'09BCSPS5065G1ZX',phone:'+91 93112 02798',email:'info@atulpipes.com',
+  bank:'Kotak Mahindra Bank',account:'9446386730',ifsc:'KKBK0005043',
+  branch:'Ithaira Greater Noida UP',
+  defaultTerms:'1. Price: Ex-Unit\n2. Payment: 100% Advance\n3. Freight: FoR Destination\n4. Delivery: 2-3 Working Days\n5. Validity: 7 Days from PI Date\n6. GST @ 18% Extra as Applicable',
+  pipePacking:{}
+};
+
+function loadDB(){
+  try {
+    return JSON.parse('{{ db_json|escapejs }}');
+  } catch(e) {
+    return {sp:[], parties:[], proformas:[]};
+  }
+}
+function loadCo(){
+  try {
+    return Object.assign({}, DEFAULT_CO, JSON.parse('{{ co_json|escapejs }}'));
+  } catch(e) {
+    return Object.assign({}, DEFAULT_CO);
+  }
+}
+function loadPL(){
+  try {
+    return JSON.parse('{{ pl_json|escapejs }}');
+  } catch(e) {
+    return {};
+  }
+}
+
+// Temporary save function logging what should go to API (placeholder for now)
+function saveDB(){
+  fetch('/api/sync/', {
+     method: 'POST',
+     headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+     body: JSON.stringify(db)
+  }).catch(e => console.error("Sync failed:", e));
+}
+function saveCo(){
+  fetch('/api/company/', {
+     method: 'POST',
+     headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+     body: JSON.stringify(co)
+  }).catch(e => console.error("Sync failed:", e));
+}
+function savePL(){
+  // Implementation of specific save skipped for brevity
+}
+
+// Helper to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+let db=loadDB(), co=loadCo(), pl=loadPL();
+
+/* ═══════════════════════════════════════════
+   MASTER ITEMS LIST
+═══════════════════════════════════════════ */
+const ITEMS = JSON.parse('{{ master_items_json|escapejs }}');
+
+/* ═══════════════════════════════════════════
+   APP STATE
+═══════════════════════════════════════════ */
+const ST={
+  view:'dashboard',       // dashboard|parties|partyPFs|allPFs|form|settings
+  sp:null,party:null,tab:'parties',
+  editId:null,cloneId:null,showDisc:false,
+  stTab:'company',
+  // form state
+  fItems:[],fDisc:0
+};
+
+/* ═══════════════════════════════════════════
+   PURE HELPERS
+═══════════════════════════════════════════ */
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function ini(n){return String(n).split(' ').filter(Boolean).map(w=>w[0].toUpperCase()).slice(0,2).join('');}
+function sf(v){const n=parseFloat(v);return isNaN(n)?0:n;}
+function fmt(n){return sf(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtL(n){return (sf(n)/100000).toFixed(2)+'L';}
+function today(){return new Date().toISOString().split('T')[0];}
+function fmtD(d){if(!d)return'';const p=String(d).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function isPipe(n){return Boolean(n&&n.toLowerCase().includes('conduit pipe'));}
+function bSize(n){
+  if(!n)return 0;
+  if(co.pipePacking&&co.pipePacking[n])return sf(co.pipePacking[n]);
+  if(n.includes('25mm'))return 30;
+  if(n.includes('20mm'))return 40;
+  return 0;
+}
+function packNarr(name,qty,unit){
+  const bs=bSize(name);qty=sf(qty);
+  if(!bs||!qty)return'';
+  if(unit==='Mtr'){const b=qty/bs;return qty+'m = '+(b===Math.floor(b)?b:b.toFixed(2))+'Bdl';}
+  if(unit==='Bundle'||unit==='Bndl'){return qty+'Bdl = '+(qty*bs)+'m';}
+  return'';
+}
+function genPINum(){
+  const all=db.proformas.filter(p=>{const pa=db.parties.find(x=>x.id===p.partyId);return pa&&pa.spId===ST.sp.id;});
+  const d=new Date();
+  return 'PI-'+ini(ST.sp.name)+'-'+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+'-'+String(all.length+1).padStart(3,'0');
+}
+
+// Amount in words
+function n2w(n){
+  n=Math.round(sf(n)*100)/100;
+  const ip=Math.floor(n), dp=Math.round((n-ip)*100);
+  const O=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const T=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  function w(x){
+    if(!x)return'';if(x<20)return O[x]+' ';if(x<100)return T[Math.floor(x/10)]+(x%10?' '+O[x%10]:'')+' ';
+    if(x<1000)return O[Math.floor(x/100)]+' Hundred '+(x%100?w(x%100):'');
+    if(x<100000)return w(Math.floor(x/1000))+'Thousand '+(x%1000?w(x%1000):'');
+    if(x<10000000)return w(Math.floor(x/100000))+'Lakh '+(x%100000?w(x%100000):'');
+    return w(Math.floor(x/10000000))+'Crore '+(x%10000000?w(x%10000000):'');
+  }
+  let r='Rupees '+(w(ip).trim()||'Zero');
+  if(dp>0)r+=' and Paise '+w(dp).trim();
+  return r.trim();
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+function toast(msg,type){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast on'+(type==='err'?' terr':type==='inf'?' tinf':' tok');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('on'),2800);
+}
+
+/* ═══════════════════════════════════════════
+   RENDER ENGINE
+═══════════════════════════════════════════ */
+function R(){
+  renderSB();
+  const bc=document.getElementById('bc');
+  const tba=document.getElementById('tba');
+  const tabs=document.getElementById('tabBar');
+  const content=document.getElementById('content');
+  tabs.style.display='none';
+  tba.innerHTML='';
+
+  if(ST.view==='settings'){rSettings(bc,tba,content);return;}
+  if(ST.view==='dashboard'||!ST.sp){rDashboard(bc,tba,content);return;}
+  if(ST.view==='form'){rForm(bc,tba,content);return;}
+
+  // Show tabs for SP views
+  tabs.style.display='flex';
+  const spPFs=db.proformas.filter(pf=>{const p=db.parties.find(x=>x.id===pf.partyId);return p&&p.spId===ST.sp.id;});
+  tabs.innerHTML=
+    '<div class="tab '+(ST.tab==='parties'?'on':'')+'" onclick="ST.tab=\'parties\';ST.view=\'parties\';ST.party=null;R()">Parties <span class="badge">'+db.parties.filter(p=>p.spId===ST.sp.id).length+'</span></div>'+
+    '<div class="tab '+(ST.tab==='allPFs'?'on':'')+'" onclick="ST.tab=\'allPFs\';ST.view=\'allPFs\';ST.party=null;R()">All Proformas <span class="badge">'+spPFs.length+'</span></div>';
+
+  if(ST.view==='partyPFs'){rPartyPFs(bc,tba,content);return;}
+  if(ST.view==='allPFs'){rAllPFs(bc,tba,content);return;}
+  rParties(bc,tba,content);
+}
+
+function renderSB(){
+  const el=document.getElementById('sbList');
+  document.getElementById('sbDash').classList.toggle('hi',ST.view==='dashboard');
+  if(!db.sp.length){el.innerHTML='<div style="padding:10px 12px;font-size:11px;color:rgba(255,255,255,.3);text-align:center">No salespersons yet</div>';return;}
+  el.innerHTML=db.sp.map(sp=>{
+    const cnt=db.parties.filter(p=>p.spId===sp.id).length;
+    return '<div class="sb-item'+(ST.sp&&ST.sp.id===sp.id?' on':'')+'" onclick="selSP(\''+sp.id+'\')">'+
+      '<div class="sb-av">'+ini(sp.name)+'</div>'+
+      '<div class="sb-info"><div class="sb-name">'+esc(sp.name)+'</div><div class="sb-cnt">'+cnt+' part'+(cnt!==1?'ies':'y')+'</div></div>'+
+      '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════ */
+function goDash(){ST.view='dashboard';ST.sp=null;ST.party=null;R();}
+function selSP(id){ST.sp=db.sp.find(s=>s.id===id);ST.tab='parties';ST.view='parties';ST.party=null;R();}
+
+function rDashboard(bc,tba,content){
+  bc.innerHTML='<span class="bc-cur">📊 Dashboard</span>';
+  tba.innerHTML='<button class="btn btn-sm bp" onclick="openAddSP()">＋ Salesperson</button>';
+
+  if(!db.sp.length){
+    content.innerHTML='<div style="max-width:400px;margin:40px auto"><div class="card"><div class="cb"><div class="empty"><div class="ei">📋</div><div class="et">Welcome to PI Manager</div><div class="es">Add your first salesperson to get started</div><button class="btn bp" onclick="openAddSP()">＋ Add Salesperson</button></div></div></div></div>';
+    return;
+  }
+
+  const totalAmt=db.proformas.reduce((s,p)=>s+p.grandTotal,0);
+  const thisMonth=today().slice(0,7);
+  const monthPFs=db.proformas.filter(p=>p.date&&p.date.startsWith(thisMonth));
+  const monthAmt=monthPFs.reduce((s,p)=>s+p.grandTotal,0);
+
+  const spRows=db.sp.map(sp=>{
+    const pts=db.parties.filter(p=>p.spId===sp.id);
+    const pfs=db.proformas.filter(pf=>pts.some(p=>p.id===pf.partyId));
+    const amt=pfs.reduce((s,p)=>s+p.grandTotal,0);
+    const pct=totalAmt>0?((amt/totalAmt)*100).toFixed(1):0;
+    return {sp,pc:pts.length,pfc:pfs.length,amt,pct};
+  }).sort((a,b)=>b.amt-a.amt);
+
+  const topParties=db.parties.map(p=>{
+    const pfs=db.proformas.filter(pf=>pf.partyId===p.id);
+    const amt=pfs.reduce((s,pf)=>s+pf.grandTotal,0);
+    const sp=db.sp.find(s=>s.id===p.spId);
+    const last=pfs.sort((a,b)=>b.date>a.date?1:-1)[0];
+    return{p,pfc:pfs.length,amt,sp,lastDate:last?last.date:''};
+  }).sort((a,b)=>b.amt-a.amt).slice(0,7);
+
+  const recentPFs=[...db.proformas].sort((a,b)=>b.date>a.date?1:-1).slice(0,6);
+
+  content.innerHTML=
+  '<div class="krow krow-4">'+
+    kpi('Total Business','₹'+fmtL(totalAmt),'var(--blue)',db.proformas.length+' PIs · '+db.parties.length+' parties')+
+    kpi('This Month','₹'+fmtL(monthAmt),'var(--green)',monthPFs.length+' PIs in '+new Date().toLocaleString('en-IN',{month:'short'}))+
+    kpi('Avg per PI',db.proformas.length?'₹'+fmt(totalAmt/db.proformas.length):'₹0','var(--purple)','average PI value')+
+    kpi('Team',''+db.sp.length,'var(--amber)',db.sp.length+' salesperson'+(db.sp.length!==1?'s':''))+
+  '</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">'+
+    // SP Performance
+    '<div class="card">'+
+    '<div class="ch"><div class="ct">👤 Salesperson Performance</div><button class="btn btn-xs bgh" onclick="openAddSP()">＋ Add</button></div>'+
+    spRows.map(r=>'<div style="padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="selSP(\''+r.sp.id+'\')">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<div style="width:30px;height:30px;border-radius:50%;background:var(--bluel);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">'+ini(r.sp.name)+'</div>'+
+          '<div><div style="font-size:13px;font-weight:600">'+esc(r.sp.name)+'</div><div style="font-size:10px;color:var(--text3)">'+r.pc+' parties · '+r.pfc+' PIs</div></div>'+
+        '</div>'+
+        '<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--blue)">'+fmtL(r.amt)+'</div><div style="font-size:10px;color:var(--text3)">'+r.pct+'%</div></div>'+
+      '</div>'+
+      '<div style="background:var(--gray100);border-radius:3px;height:4px;overflow:hidden"><div style="background:var(--blue);height:100%;width:'+r.pct+'%;border-radius:3px"></div></div>'+
+    '</div>').join('')+
+    '<div style="padding:10px 16px"><button class="btn btn-sm bp" style="width:100%;justify-content:center" onclick="openAddSP()">＋ Add Salesperson</button></div>'+
+    '</div>'+
+    // Top Parties
+    '<div class="card">'+
+    '<div class="ch"><div class="ct">🏢 Top Parties</div></div>'+
+    topParties.map((r,i)=>'<div style="padding:8px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer" onclick="selSP(\''+(r.sp?r.sp.id:'')+'\');setTimeout(()=>openParty(\''+r.p.id+'\'),50)">'+
+      '<div style="width:20px;height:20px;border-radius:50%;background:var(--gray100);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text2);flex-shrink:0">'+(i+1)+'</div>'+
+      '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.p.name)+'</div><div style="font-size:10px;color:var(--text3)">'+(r.sp?esc(r.sp.name):'')+'  ·  '+r.pfc+' PIs  ·  '+fmtD(r.lastDate)+'</div></div>'+
+      '<div style="font-size:12px;font-weight:700;white-space:nowrap">₹'+fmt(r.amt)+'</div>'+
+    '</div>').join('')+
+    '</div>'+
+  '</div>'+
+  // Recent PFs
+  '<div class="card">'+
+  '<div class="ch"><div class="ct">🕐 Recent Proformas</div></div>'+
+  (recentPFs.length?
+    recentPFs.map(pf=>{
+      const party=db.parties.find(p=>p.id===pf.partyId);
+      const sp=db.sp.find(s=>s.id===pf.spId);
+      return '<div class="pfrow" style="border-radius:0;border-left:none;border-right:none;border-top:none;box-shadow:none">'+
+        '<div style="flex:1;min-width:0"><div class="pfnum">'+esc(pf.number)+'</div><div class="pfdate">'+(party?esc(party.name):'')+'  ·  '+(sp?esc(sp.name):'')+'  ·  '+fmtD(pf.date)+'</div></div>'+
+        '<div style="text-align:right;padding-right:12px"><div class="pfamt">₹'+fmt(pf.grandTotal)+'</div><div class="pfgst">incl. GST</div></div>'+
+        '<button class="btn btn-sm" onclick="exportPDF(\''+pf.id+'\',true)" title="Preview">👁</button>'+
+        '<button class="btn btn-sm bp" onclick="exportPDF(\''+pf.id+'\')">PDF</button>'+
+      '</div>';
+    }).join('')
+    :'<div class="empty" style="padding:24px"><div class="es">No proformas yet</div></div>')+
+  '</div>';
+}
+
+function kpi(lbl,val,color,sub){
+  return '<div class="kpi" style="border-left:3px solid '+color+'">'+
+    '<div class="kpi-lbl">'+lbl+'</div>'+
+    '<div class="kpi-val" style="color:'+color+'">'+val+'</div>'+
+    '<div class="kpi-sub">'+sub+'</div>'+
+  '</div>';
+}
+
+/* ═══════════════════════════════════════════
+   PARTIES
+═══════════════════════════════════════════ */
+function rParties(bc,tba,content){
+  bc.innerHTML='<span class="bc-a" onclick="goDash()">Home</span><span class="bc-sep">›</span><span class="bc-cur">'+esc(ST.sp.name)+'</span>';
+  tba.innerHTML=
+    '<button class="btn btn-sm bgh" onclick="openEditSP(\''+ST.sp.id+'\')">✎ Edit</button>'+
+    '<button class="btn btn-sm br" onclick="delSP(\''+ST.sp.id+'\')">✕ Delete SP</button>'+
+    '<button class="btn btn-sm bp" onclick="openAddParty()">＋ Add Party</button>';
+
+  const pts=db.parties.filter(p=>p.spId===ST.sp.id);
+  if(!pts.length){
+    content.innerHTML='<div class="empty"><div class="ei">🏢</div><div class="et">No parties yet</div><div class="es">Add your first party for '+esc(ST.sp.name)+'</div><button class="btn bp" onclick="openAddParty()">＋ Add Party</button></div>';
+    return;
+  }
+
+  content.innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
+      '<input id="ptSearch" class="fc" placeholder="🔍 Search parties..." style="max-width:260px" oninput="filterParties(this.value)">'+
+      '<span style="font-size:12px;color:var(--text3)">'+pts.length+' part'+(pts.length!==1?'ies':'y')+'</span>'+
+    '</div>'+
+    '<div class="pgrid" id="ptGrid">'+
+    pts.map(p=>{
+      const cnt=db.proformas.filter(pf=>pf.partyId===p.id).length;
+      const amt=db.proformas.filter(pf=>pf.partyId===p.id).reduce((s,pf)=>s+pf.grandTotal,0);
+      return '<div class="pcard" data-name="'+esc(p.name.toLowerCase())+'" data-city="'+esc((p.city||'').toLowerCase())+'" onclick="openParty(\''+p.id+'\')">'+
+        '<div class="pav">'+ini(p.name)+'</div>'+
+        '<div class="pname" title="'+esc(p.name)+'">'+esc(p.name)+'</div>'+
+        '<div class="pmeta">'+(p.city?esc(p.city)+', ':'')+esc(p.state||'')+'<br>'+(p.gstin?'GST: '+esc(p.gstin):'No GSTIN')+'<br>'+esc(p.phone||'&nbsp;')+'</div>'+
+        '<div class="pfoot">'+
+          '<div style="font-size:11px;color:var(--text2);font-weight:500">'+cnt+' PI'+(cnt!==1?'s:':'')+'  ₹'+fmt(amt)+'</div>'+
+          '<div class="pacts">'+
+            '<button class="ibt" onclick="openParty(\''+p.id+'\');event.stopPropagation()" title="View PIs" style="font-size:11px;padding:3px 7px">PIs</button>'+
+            '<button class="ibt" onclick="openParty(\''+p.id+'\');setTimeout(newPF,60);event.stopPropagation()" title="New PI" style="font-size:11px;padding:3px 7px;color:var(--blue)">+PI</button>'+
+            '<button class="ibt" onclick="openEditParty(\''+p.id+'\');event.stopPropagation()" title="Edit">✎</button>'+
+            '<button class="ibt" style="color:var(--red)" onclick="delParty(\''+p.id+'\');event.stopPropagation()" title="Delete">✕</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    }).join('')+
+    '</div>';
+}
+
+function filterParties(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('#ptGrid .pcard').forEach(c=>{
+    c.style.display=(c.dataset.name.includes(q)||c.dataset.city.includes(q))?'':'none';
+  });
+}
+
+/* ═══════════════════════════════════════════
+   PARTY PFs
+═══════════════════════════════════════════ */
+function openParty(id){ST.party=db.parties.find(p=>p.id===id);ST.view='partyPFs';R();}
+
+function rPartyPFs(bc,tba,content){
+  bc.innerHTML=
+    '<span class="bc-a" onclick="goDash()">Home</span><span class="bc-sep">›</span>'+
+    '<span class="bc-a" onclick="ST.tab=\'parties\';ST.view=\'parties\';ST.party=null;R()">'+esc(ST.sp.name)+'</span>'+
+    '<span class="bc-sep">›</span><span class="bc-cur">'+esc(ST.party.name)+'</span>';
+
+  const pfs=db.proformas.filter(pf=>pf.partyId===ST.party.id);
+  const lastPF=pfs.length?pfs[pfs.length-1]:null;
+
+  tba.innerHTML=
+    '<span style="font-size:11px;color:var(--text3);margin-right:4px">'+(ST.party.city?esc(ST.party.city)+', ':'')+esc(ST.party.state||'')+(ST.party.gstin?' · '+esc(ST.party.gstin):'')+'</span>'+
+    '<button class="btn btn-sm bgh" onclick="openEditParty(\''+ST.party.id+'\')">✎ Edit</button>'+
+    (lastPF?'<button class="btn btn-sm" onclick="clonePF(\''+lastPF.id+'\')">📋 Copy Last PI</button>':'')+
+    '<button class="btn btn-sm bp" onclick="newPF()">＋ New PI</button>';
+
+  if(!pfs.length){
+    content.innerHTML='<div class="empty"><div class="ei">📄</div><div class="et">No proformas yet</div><div class="es">Create first proforma for '+esc(ST.party.name)+'</div><button class="btn bp" onclick="newPF()">＋ New Proforma</button></div>';
+    return;
+  }
+
+  const total=pfs.reduce((s,p)=>s+p.grandTotal,0);
+  const avg=total/pfs.length;
+  const sorted=[...pfs].sort((a,b)=>b.date>a.date?1:-1);
+
+  content.innerHTML=
+  '<div class="krow krow-4" style="margin-bottom:14px">'+
+    kpi('Total PIs',''+pfs.length,'var(--blue)',fmtD(pfs[0]?.date||'')+' onwards')+
+    kpi('Total Value','₹'+fmt(total),'var(--green)','incl. GST 18%')+
+    kpi('Avg per PI','₹'+fmt(avg),'var(--purple)','average PI value')+
+    kpi('Latest PI',pfs[pfs.length-1]?.number||'—','var(--amber)',fmtD(pfs[pfs.length-1]?.date||''))+
+  '</div>'+
+  '<div class="pfl">'+
+  sorted.map((pf,idx)=>{
+    const prevPF=sorted[idx+1];
+    let chgHtml='';
+    if(prevPF){
+      const pm={};prevPF.items.forEach(i=>{if(i.itemName)pm[i.itemName]=sf(i.netRate);});
+      const ups=pf.items.filter(i=>i.itemName&&pm[i.itemName]!==undefined&&sf(i.netRate)>pm[i.itemName]).length;
+      const dns=pf.items.filter(i=>i.itemName&&pm[i.itemName]!==undefined&&sf(i.netRate)<pm[i.itemName]).length;
+      const diff=pf.grandTotal-prevPF.grandTotal;
+      if(ups||dns){
+        chgHtml='<div style="display:flex;gap:4px;margin-top:3px">'+
+          (ups?'<span class="pill pill-r">▲'+ups+' rate</span>':'')+
+          (dns?'<span class="pill pill-g">▼'+dns+' rate</span>':'')+
+          '<span class="pill '+(diff>0?'pill-r':'pill-g')+'">'+(diff>0?'▲':'▼')+'₹'+fmt(Math.abs(diff))+'</span>'+
+        '</div>';
+      }
+    }
+    return '<div class="pfrow">'+
+      '<div style="flex:1;min-width:0">'+
+        '<div class="pfnum">'+esc(pf.number)+'</div>'+
+        '<div class="pfdate">'+fmtD(pf.date)+(pf.validTill?' · Valid: '+fmtD(pf.validTill):'')+' · '+pf.items.length+' items · Disc '+sf(pf.discount)+'%'+(pf.showDiscInPDF?'':' <span class="pill pill-a">Disc hidden</span>')+'</div>'+
+        chgHtml+
+      '</div>'+
+      '<div style="text-align:right;padding-right:12px"><div class="pfamt">₹'+fmt(pf.grandTotal)+'</div><div class="pfgst">incl. GST 18%</div></div>'+
+      '<div class="pfacts">'+
+        '<button class="btn btn-sm" onclick="clonePF(\''+pf.id+'\')">Copy</button>'+
+        '<button class="btn btn-sm" onclick="editPF(\''+pf.id+'\')">Edit</button>'+
+        '<button class="btn btn-sm" onclick="exportPDF(\''+pf.id+'\',true)" title="Preview">👁</button>'+
+        '<button class="btn btn-sm bp" onclick="exportPDF(\''+pf.id+'\')">PDF</button>'+
+        '<button class="btn btn-sm br" onclick="delPF(\''+pf.id+'\')">Del</button>'+
+      '</div>'+
+    '</div>';
+  }).join('')+
+  '</div>';
+}
+
+/* ═══════════════════════════════════════════
+   ALL PFs
+═══════════════════════════════════════════ */
+function rAllPFs(bc,tba,content){
+  bc.innerHTML=
+    '<span class="bc-a" onclick="goDash()">Home</span><span class="bc-sep">›</span>'+
+    '<span class="bc-a" onclick="ST.tab=\'parties\';ST.view=\'parties\';ST.party=null;R()">'+esc(ST.sp.name)+'</span>'+
+    '<span class="bc-sep">›</span><span class="bc-cur">All Proformas</span>';
+  tba.innerHTML='';
+
+  const pfs=db.proformas.filter(pf=>{const p=db.parties.find(x=>x.id===pf.partyId);return p&&p.spId===ST.sp.id;});
+  const total=pfs.reduce((s,p)=>s+p.grandTotal,0);
+  const sorted=[...pfs].sort((a,b)=>b.date>a.date?1:-1);
+
+  content.innerHTML=
+  '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">'+
+    '<input id="pfSearch" class="fc" placeholder="🔍 Search party or PI number..." style="max-width:280px" oninput="filterAllPFs(this.value)">'+
+    '<span style="font-size:12px;color:var(--text3)">'+pfs.length+' PIs · ₹'+fmt(total)+'</span>'+
+    '<div style="margin-left:auto;display:flex;gap:6px">'+
+      '<button class="btn btn-sm" onclick="sortAllPFs(\'date\')">📅 Date</button>'+
+      '<button class="btn btn-sm" onclick="sortAllPFs(\'amt\')">₹ Value</button>'+
+    '</div>'+
+  '</div>'+
+  '<div class="pfl" id="allPFList">'+
+  sorted.map(pf=>{
+    const party=db.parties.find(p=>p.id===pf.partyId);
+    return '<div class="pfrow" data-num="'+esc(pf.number.toLowerCase())+'" data-party="'+esc((party?party.name:'').toLowerCase())+'" data-amt="'+pf.grandTotal+'" data-date="'+pf.date+'">'+
+      '<div style="flex:1;min-width:0"><div class="pfnum">'+esc(pf.number)+'</div><div class="pfdate">'+(party?esc(party.name):'')+'  ·  '+fmtD(pf.date)+'  ·  '+pf.items.length+' items</div></div>'+
+      '<div style="text-align:right;padding-right:12px"><div class="pfamt">₹'+fmt(pf.grandTotal)+'</div><div class="pfgst">incl. GST</div></div>'+
+      '<div class="pfacts">'+
+        '<button class="btn btn-sm" onclick="editPF(\''+pf.id+'\')">Edit</button>'+
+        '<button class="btn btn-sm" onclick="exportPDF(\''+pf.id+'\',true)" title="Preview">👁</button>'+
+        '<button class="btn btn-sm bp" onclick="exportPDF(\''+pf.id+'\')">PDF</button>'+
+      '</div>'+
+    '</div>';
+  }).join('')+
+  '</div>';
+}
+
+let _psd={date:-1,amt:-1};
+function filterAllPFs(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('#allPFList .pfrow').forEach(r=>{
+    r.style.display=(r.dataset.num.includes(q)||r.dataset.party.includes(q))?'':'none';
+  });
+}
+function sortAllPFs(by){
+  _psd[by]*=-1;
+  const list=document.getElementById('allPFList');
+  if(!list)return;
+  [...list.querySelectorAll('.pfrow')].sort((a,b)=>{
+    return by==='date'?(a.dataset.date>b.dataset.date?1:-1)*_psd[by]:(sf(a.dataset.amt)-sf(b.dataset.amt))*_psd[by];
+  }).forEach(r=>list.appendChild(r));
+}
+
+/* ═══════════════════════════════════════════
+   PF FORM
+═══════════════════════════════════════════ */
+function newPF(){ST.view='form';ST.editId=null;ST.cloneId=null;ST.fItems=[mkRow()];ST.fDisc=0;ST.showDisc=false;R();}
+function mkRow(src){return Object.assign({id:uid(),itemName:'',unit:'Pcs',qty:1,rate:'',disc:'',manualNet:''},src||{});}
+function clonePF(id){
+  const pf=db.proformas.find(p=>p.id===id);if(!pf)return;
+  if(pf.partyId&&!ST.party)ST.party=db.parties.find(p=>p.id===pf.partyId);
+  ST.view='form';ST.editId=null;ST.cloneId=id;
+  ST.fItems=pf.items.map(i=>mkRow(i));
+  ST.fDisc=sf(pf.discount);ST.showDisc=pf.showDiscInPDF||false;
+  R();toast('Copied from '+pf.number);
+}
+function editPF(id){
+  const pf=db.proformas.find(p=>p.id===id);if(!pf)return;
+  ST.party=db.parties.find(p=>p.id===pf.partyId);
+  ST.view='form';ST.editId=id;ST.cloneId=null;
+  ST.fItems=pf.items.map(i=>mkRow(i));
+  ST.fDisc=sf(pf.discount);ST.showDisc=pf.showDiscInPDF||false;
+  R();
+}
+function backToPFs(){ST.view='partyPFs';R();}
+function previewPF(){
+  const data=collectPF();
+  if(!data.number.trim()){toast('PI number required','err');return;}
+  if(!data.items.some(i=>i.itemName)){toast('At least one item add karo','err');return;}
+  // Temporary save for preview
+  let tmpId='_preview_tmp';
+  const existing=db.proformas.findIndex(p=>p.id===tmpId);
+  const tmp=Object.assign({id:tmpId},data);
+  if(existing>=0)db.proformas[existing]=tmp;else db.proformas.push(tmp);
+  saveDB();
+  exportPDF(tmpId,true);
+  // Clean up after 5s
+  setTimeout(()=>{db.proformas=db.proformas.filter(p=>p.id!==tmpId);saveDB();},5000);
+}
+
+function rForm(bc,tba,content){
+  const isEdit=Boolean(ST.editId);
+  const pf=isEdit?db.proformas.find(p=>p.id===ST.editId):null;
+  bc.innerHTML=
+    '<span class="bc-a" onclick="goDash()">Home</span><span class="bc-sep">›</span>'+
+    '<span class="bc-a" onclick="ST.tab=\'parties\';ST.view=\'parties\';ST.party=null;R()">'+esc(ST.sp?ST.sp.name:'')+'</span>'+
+    '<span class="bc-sep">›</span>'+
+    '<span class="bc-a" onclick="backToPFs()">'+esc(ST.party?ST.party.name:'')+'</span>'+
+    '<span class="bc-sep">›</span>'+
+    '<span class="bc-cur">'+(isEdit?esc(pf.number):'New PI')+'</span>';
+  tba.innerHTML=
+    '<button class="btn btn-sm" onclick="backToPFs()">Cancel</button>'+
+    '<button class="btn btn-sm" onclick="previewPF()">👁 Preview</button>'+
+    '<button class="btn btn-sm bg" onclick="savePF(true)">💾 Save & PDF</button>'+
+    '<button class="btn btn-sm bp" onclick="savePF(false)">💾 Save</button>';
+
+  const num=isEdit?pf.number:genPINum();
+  const dt=isEdit?pf.date:today();
+  const vt=isEdit&&pf.validTill?pf.validTill:'';
+  const subj=isEdit?pf.subject||'':'';
+  const notes=isEdit?pf.notes||co.defaultTerms:co.defaultTerms;
+  const st=isEdit&&pf.shipTo?pf.shipTo:null;
+
+  content.innerHTML=
+  '<div style="display:grid;grid-template-columns:1fr 285px;gap:14px;align-items:start">'+
+  // LEFT
+  '<div>'+
+    // PI Details
+    '<div class="card" style="margin-bottom:12px">'+
+      '<div class="ch"><div class="ct">📋 PI Details</div></div>'+
+      '<div class="cb">'+
+        '<div class="g4">'+
+          '<div class="fg"><label class="fl req">PI Number</label><input id="F_num" class="fc mono" value="'+esc(num)+'"></div>'+
+          '<div class="fg"><label class="fl req">Date</label><input type="date" id="F_date" class="fc" value="'+dt+'"></div>'+
+          '<div class="fg"><label class="fl">Valid Till</label><input type="date" id="F_vt" class="fc" value="'+vt+'"></div>'+
+          '<div class="fg"><label class="fl">Subject</label><input id="F_subj" class="fc" value="'+esc(subj)+'" placeholder="Supply of material..."></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    // Ship To
+    '<div class="card" style="margin-bottom:12px">'+
+      '<div class="ch">'+
+        '<div class="ct">🚚 Ship To <span style="font-size:11px;font-weight:400;color:var(--text3)">(if different from Bill To)</span></div>'+
+        '<label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text2)">'+
+          '<input type="checkbox" id="F_ston" '+(st?'checked':'')+' onchange="document.getElementById(\'F_stf\').style.display=this.checked?\'block\':\'none\'"> Different address</label>'+
+      '</div>'+
+      '<div id="F_stf" style="display:'+(st?'block':'none')+'">'+
+        '<div class="cb">'+
+          '<div style="display:flex;gap:8px;margin-bottom:10px">'+
+            '<button class="btn btn-sm" onclick="cpBillTo()">📋 Copy Bill To</button>'+
+            '<input id="F_stg" class="fc mono" style="flex:1;font-size:12px" placeholder="GSTIN (auto-fill state)" value="'+esc(st?st.gstin||'':'')+'">'+
+            '<button class="btn btn-sm" onclick="gstFill()">🔍</button>'+
+          '</div>'+
+          '<div class="g2">'+
+            '<div class="fg" style="grid-column:1/-1"><label class="fl">Name</label><input id="F_stn" class="fc" value="'+esc(st?st.name||'':'')+'" placeholder="Consignee"></div>'+
+            '<div class="fg" style="grid-column:1/-1"><label class="fl">Address</label><input id="F_sta" class="fc" value="'+esc(st?st.address||'':'')+'"></div>'+
+            '<div class="fg"><label class="fl">City</label><input id="F_stc" class="fc" value="'+esc(st?st.city||'':'')+'"></div>'+
+            '<div class="fg"><label class="fl">State</label><input id="F_sts" class="fc" value="'+esc(st?st.state||'':'')+'"></div>'+
+            '<div class="fg"><label class="fl">PIN</label><input id="F_stp" class="fc" value="'+esc(st?st.pin||'':'')+'"></div>'+
+            '<div class="fg"><label class="fl">Phone</label><input id="F_stph" class="fc" value="'+esc(st?st.phone||'':'')+'"></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    // Items
+    '<div class="card" style="margin-bottom:12px">'+
+      '<div class="ch"><div class="ct">📦 Items</div><button class="btn btn-sm bgh" onclick="goSettings();ST.stTab=\'prices\';R()">💰 Price List</button></div>'+
+      '<div class="cb" style="padding-bottom:8px">'+
+        '<div class="dbar">'+
+          '<span class="dlbl">Global Disc%</span>'+
+          '<input type="number" id="F_disc" class="dinp" value="'+ST.fDisc+'" min="0" max="100" step="0.5" oninput="ST.fDisc=sf(this.value);refreshTbl()" onchange="ST.fDisc=sf(this.value);refreshTbl()">'+
+          '<button class="btn btn-sm" onclick="applyGDisc()" title="Apply % to all items">↓ Apply All</button>'+
+          '<label style="display:flex;align-items:center;gap:5px;font-size:11px;color:#1e40af;cursor:pointer;margin-left:auto;white-space:nowrap">'+
+            '<input type="checkbox" id="F_sdisc" '+(ST.showDisc?'checked':'')+' onchange="ST.showDisc=this.checked"> Show Disc in PDF</label>'+
+          '<span style="font-size:11px;color:#3b82f6;white-space:nowrap">Net=List−Disc · GST 18%</span>'+
+        '</div>'+
+        '<div class="itw" style="margin-bottom:8px">'+
+          '<table class="itbl">'+
+            '<thead><tr>'+
+              '<th style="width:26px">#</th>'+
+              '<th>Item</th>'+
+              '<th style="width:62px">Unit</th>'+
+              '<th style="width:58px">Qty</th>'+
+              '<th style="width:116px">Packing</th>'+
+              '<th style="width:80px">List Rate</th>'+
+              '<th style="width:50px" title="Item discount %">Disc%</th>'+
+              '<th style="width:90px">Net Rate</th>'+
+              '<th style="width:80px">Amount</th>'+
+              '<th style="width:26px"></th>'+
+            '</tr></thead>'+
+            '<tbody id="itBody"></tbody>'+
+          '</table>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:10px">'+
+          '<button class="btn btn-sm" onclick="addRow()">＋ Row</button>'+
+          '<span style="font-size:11px;color:var(--text3)">🔵 Auto net rate &nbsp; 🟢 Manual net rate &nbsp; Mtr/Bundle auto-converts</span>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    // Terms
+    '<div class="card">'+
+      '<div class="ch">'+
+        '<div class="ct">📝 Terms & Conditions</div>'+
+        '<button class="btn btn-sm bgh" onclick="document.getElementById(\'F_notes\').value=co.defaultTerms||\'\'">↺ Reset</button>'+
+      '</div>'+
+      '<div class="cb"><textarea id="F_notes" class="fc" rows="5" style="line-height:1.6">'+esc(notes)+'</textarea></div>'+
+    '</div>'+
+  '</div>'+
+  // RIGHT PANEL
+  '<div style="position:sticky;top:0;display:flex;flex-direction:column;gap:10px">'+
+    // Party info
+    '<div class="card">'+
+      '<div class="ch"><div class="ct">🏢 '+esc(ST.party?ST.party.name:'')+'</div></div>'+
+      '<div class="cb" style="font-size:12px;color:var(--text2);line-height:1.7">'+
+        (ST.party?(ST.party.city?esc(ST.party.city)+', ':'')+esc(ST.party.state||'')+'<br>'+(ST.party.gstin?'GST: '+esc(ST.party.gstin):'No GSTIN')+(ST.party.phone?'<br>'+esc(ST.party.phone):''):'')+'</div>'+
+    '</div>'+
+    '<div id="rateComp"></div>'+
+    '<div id="totPanel"></div>'+
+    '<div style="display:flex;flex-direction:column;gap:7px">'+
+      '<button class="btn bp" style="width:100%;justify-content:center" onclick="savePF(false)">💾 Save</button>'+
+      '<button class="btn bg" style="width:100%;justify-content:center" onclick="savePF(true)">📥 Save & PDF</button>'+
+      '<button class="btn" style="width:100%;justify-content:center" onclick="backToPFs()">Cancel</button>'+
+    '</div>'+
+  '</div>'+
+  '</div>';
+
+  refreshTbl();
+}
+
+function cpBillTo(){
+  const p=ST.party;if(!p)return;
+  const g=id=>document.getElementById(id);
+  if(g('F_stn'))g('F_stn').value=p.name||'';
+  if(g('F_sta'))g('F_sta').value=p.address||'';
+  if(g('F_stc'))g('F_stc').value=p.city||'';
+  if(g('F_sts'))g('F_sts').value=p.state||'';
+  if(g('F_stp'))g('F_stp').value=p.pin||'';
+  if(g('F_stph'))g('F_stph').value=p.phone||'';
+  if(g('F_stg'))g('F_stg').value=p.gstin||'';
+  toast('Copied from Bill To');
+}
+function gstFill(){
+  const el=document.getElementById('F_stg');if(!el)return;
+  const gstin=el.value.trim().toUpperCase();
+  if(gstin.length!==15){toast('GSTIN 15 digits chahiye','err');return;}
+  const stMap={'01':'J&K','02':'HP','03':'Punjab','04':'Chandigarh','05':'Uttarakhand','06':'Haryana','07':'Delhi','08':'Rajasthan','09':'Uttar Pradesh','10':'Bihar','18':'Assam','19':'West Bengal','20':'Jharkhand','21':'Odisha','22':'CG','23':'MP','24':'Gujarat','27':'Maharashtra','29':'Karnataka','30':'Goa','32':'Kerala','33':'Tamil Nadu','36':'Telangana','37':'AP'};
+  const state=stMap[gstin.slice(0,2)]||'';
+  const sel=document.getElementById('F_sts');if(sel&&state)sel.value=state;
+  toast(state?'State: '+state+' auto-filled from GSTIN':'State code not found, manually bharo','inf');
+}
+
+/* ─── ITEMS TABLE LOGIC ─── */
+function getItemOpts(sel){
+  const hist=new Set();
+  if(ST.party){
+    db.proformas.filter(p=>p.partyId===ST.party.id).forEach(pf=>
+      pf.items.forEach(i=>{if(i.itemName&&!ITEMS.includes(i.itemName))hist.add(i.itemName);})
+    );
+  }
+  return ['<option value="">— Select Item —</option>',
+    ...[...ITEMS,...hist].map(m=>'<option value="'+esc(m)+'"'+(m===sel?' selected':'')+'>'+esc(m)+'</option>')
+  ].join('');
+}
+
+function refreshTbl(){
+  const disc=ST.fDisc||0;
+  let sub=0;
+  const tb=document.getElementById('itBody');
+  if(!tb)return;
+  const units=['Pcs','Mtr','Bundle','Box','Set','Lot','Nos','Bdl','Roll'];
+  tb.innerHTML=ST.fItems.map((item,i)=>{
+    const lr=sf(item.rate);
+    const id=sf(item.disc)!==undefined&&item.disc!==''?sf(item.disc):disc;
+    const iDisc=item.disc!==''&&item.disc!==undefined?sf(item.disc):disc;
+    const autoNR=lr*(1-iDisc/100);
+    const nr=item.manualNet?sf(item.manualNet):autoNR;
+    const qty=sf(item.qty);
+    const amt=Math.round(nr*qty*100)/100;
+    sub+=amt;
+    const narr=isPipe(item.itemName)?packNarr(item.itemName,qty,item.unit):'';
+    const lp=pl[item.itemName];
+    const diffDisc=Math.abs(iDisc-disc)>0.01;
+    const pid=item.id;
+    return '<tr style="'+(diffDisc?'background:#fefce8;':'')+'">'
+      +'<td style="color:var(--text3);font-size:10px;text-align:center">'+(i+1)+'</td>'
+      +'<td><select class="ifc" style="min-width:185px" onchange="setR(\''+pid+'\',\'itemName\',this.value)">'+getItemOpts(item.itemName)+'</select></td>'
+      +'<td><select class="ifc" style="width:60px" onchange="setR(\''+pid+'\',\'unit\',this.value)">'+units.map(u=>'<option'+(item.unit===u?' selected':'')+'>'+u+'</option>').join('')+'</select></td>'
+      +'<td><input type="number" class="ifc" value="'+qty+'" min="0.001" step="any" style="width:55px;text-align:right" oninput="setR(\''+pid+'\',\'qty\',this.value)" onchange="setR(\''+pid+'\',\'qty\',this.value)"></td>'
+      +'<td style="font-size:10px;color:#0369a1;font-style:italic;white-space:nowrap">'+(narr||'—')+'</td>'
+      +'<td><input type="number" class="ifc" value="'+(item.rate||lp||'')+'" placeholder="'+(lp||'')+'" min="0" step="any" style="width:76px;text-align:right" oninput="setR(\''+pid+'\',\'rate\',this.value)" onchange="setR(\''+pid+'\',\'rate\',this.value)"></td>'
+      +'<td><input type="number" class="ifc" value="'+iDisc+'" min="0" max="100" step="0.5" style="width:46px;text-align:center;background:'+(diffDisc?'#fef9c3':'')+';" oninput="setR(\''+pid+'\',\'disc\',this.value)" onchange="setR(\''+pid+'\',\'disc\',this.value)"></td>'
+      +'<td style="position:relative"><input type="number" class="ifc '+(item.manualNet?'nr-m':'nr-a')+'" value="'+(item.manualNet||nr.toFixed(2))+'" min="0" step="any" style="width:82px;text-align:right;font-weight:600" title="'+(item.manualNet?'Manual — click 🔄 to restore auto':'Auto-calculated')+'" oninput="setMNR(\''+pid+'\',this.value)" onchange="setMNR(\''+pid+'\',this.value)">'+(item.manualNet?'<button onclick="clrMNR(\''+pid+'\')" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:9px;color:var(--text3)" title="Restore auto">🔄</button>':'')+'</td>'
+      +'<td style="font-family:\'JetBrains Mono\',monospace;font-weight:600;font-size:12px;text-align:right;white-space:nowrap">'+(amt>0?'₹'+fmt(amt):'—')+'</td>'
+      +'<td><button class="delbtn" onclick="delR(\''+pid+'\')" title="Remove">✕</button></td>'
+      +'</tr>';
+  }).join('');
+
+  const gst=sub*0.18;
+  const freight=parseFloat(document.getElementById('F_freight')?.value||0)||0;
+  const grand=sub+gst+freight;
+  const tp=document.getElementById('totPanel');
+  if(tp)tp.innerHTML=
+    '<div class="tpanel">'+
+      '<div class="trow"><span class="tlbl">Subtotal (excl. GST)</span><span class="tval">₹'+fmt(sub)+'</span></div>'+
+      '<div class="trow"><span class="tlbl">CGST @ 9%</span><span class="tval">₹'+fmt(gst/2)+'</span></div>'+
+      '<div class="trow"><span class="tlbl">SGST @ 9%</span><span class="tval">₹'+fmt(gst/2)+'</span></div>'+
+      '<div class="trow" style="background:#fdf4ff;align-items:center">'+
+        '<span class="tlbl" style="display:flex;align-items:center;gap:6px;color:#7c3aed">'+
+          '🚚 Freight &nbsp;<input type="number" id="F_freight" value="'+(typeof _freight!=="undefined"?_freight:'')+'" min="0" step="1" placeholder="0" '+
+          'style="width:80px;border:1.5px solid #c4b5fd;border-radius:5px;padding:3px 7px;font-size:12px;font-family:monospace;text-align:right;background:#fff;color:#7c3aed" '+
+          'oninput="refreshTbl()" onchange="refreshTbl()">'+
+        '</span>'+
+        '<span class="tval" style="color:#7c3aed">'+(freight>0?'₹'+fmt(freight):'—')+'</span>'+
+      '</div>'+
+      '<div class="trow tgrand"><span class="tlbl">Grand Total</span><span class="tval">₹'+fmt(grand)+'</span></div>'+
+    '</div>';
+
+  renderRateComp();
+}
+
+function setR(id,f,v){
+  const r=ST.fItems.find(x=>x.id===id);if(!r)return;
+  r[f]=v;
+  if(f==='itemName'&&pl[v]&&!sf(r.rate))r.rate=pl[v];
+  refreshTbl();
+}
+function setMNR(id,v){const r=ST.fItems.find(x=>x.id===id);if(r){r.manualNet=v;refreshTbl();}}
+function clrMNR(id){const r=ST.fItems.find(x=>x.id===id);if(r){delete r.manualNet;refreshTbl();toast('Auto calculation restored');}}
+function addRow(){ST.fItems.push(mkRow());refreshTbl();}
+function delR(id){if(ST.fItems.length>1){ST.fItems=ST.fItems.filter(x=>x.id!==id);refreshTbl();}}
+function applyGDisc(){
+  const d=sf(document.getElementById('F_disc')?.value||0);
+  ST.fDisc=d;
+  ST.fItems.forEach(i=>{i.disc=d;delete i.manualNet;});
+  refreshTbl();
+  toast('Discount '+d+'% applied to all items');
+}
+
+function renderRateComp(){
+  const rcp=document.getElementById('rateComp');if(!rcp)return;
+  const prev=db.proformas.filter(p=>p.partyId===ST.party?.id&&p.id!==ST.editId);
+  const ref=prev.length?prev[prev.length-1]:(ST.cloneId?db.proformas.find(p=>p.id===ST.cloneId):null);
+  if(!ref){rcp.innerHTML='';return;}
+  const rm={};ref.items.forEach(i=>{if(i.itemName)rm[i.itemName]=sf(i.netRate);});
+  const disc=ST.fDisc||0;
+  const rows=ST.fItems.filter(i=>i.itemName&&rm[i.itemName]!==undefined).map(item=>{
+    const lr=sf(item.rate);
+    const id=item.disc!==''&&item.disc!==undefined?sf(item.disc):disc;
+    const cur=item.manualNet?sf(item.manualNet):lr*(1-id/100);
+    const prev2=rm[item.itemName];
+    const diff=cur-prev2;
+    if(Math.abs(diff)<0.001)return'';
+    const up=diff>0;
+    const pct=prev2>0?Math.abs(diff/prev2*100).toFixed(1):0;
+    return '<div style="padding:5px 0;border-bottom:1px solid var(--gray100)">'+
+      '<div style="font-size:11px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(item.itemName.replace('PVC ',''))+'</div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px">'+
+        '<span style="font-size:10px;color:var(--text2);font-family:monospace">₹'+prev2.toFixed(2)+'→₹'+cur.toFixed(2)+'</span>'+
+        '<span class="pill '+(up?'pill-r':'pill-g')+'">'+(up?'▲':'▼')+pct+'%</span>'+
+      '</div></div>';
+  }).filter(Boolean).join('');
+
+  if(!rows){rcp.innerHTML='<div class="card"><div class="cb" style="font-size:12px;color:var(--text3);padding:10px 14px">📊 vs '+esc(ref.number)+': No changes</div></div>';return;}
+  rcp.innerHTML=
+    '<div class="card">'+
+      '<div class="ch" style="padding:9px 14px"><div class="ct" style="font-size:12px">📊 vs '+esc(ref.number)+'</div><span style="font-size:10px;color:var(--text3)">'+fmtD(ref.date)+'</span></div>'+
+      '<div style="padding:6px 14px;max-height:190px;overflow-y:auto">'+rows+'</div>'+
+      '<div style="padding:6px 14px;background:var(--gray50);border-top:1px solid var(--border);font-size:10px;color:var(--text3)">Prev disc: '+sf(ref.discount)+'% → Now: '+disc+'%</div>'+
+    '</div>';
+}
+
+/* ─── COLLECT & SAVE PF ─── */
+function collectPF(){
+  const disc=sf(document.getElementById('F_disc')?.value||0);
+  let sub=0;
+  const items=ST.fItems.map(item=>{
+    const lr=sf(item.rate);
+    const iDisc=item.disc!==''&&item.disc!==undefined?sf(item.disc):disc;
+    const nr=item.manualNet?sf(item.manualNet):Math.round(lr*(1-iDisc/100)*100)/100;
+    const qty=sf(item.qty);
+    const amt=Math.round(nr*qty*100)/100;
+    sub+=amt;
+    return Object.assign({},item,{listRate:lr,netRate:nr,itemDisc:iDisc,amount:amt,narration:isPipe(item.itemName)?packNarr(item.itemName,qty,item.unit):''});
+  });
+  const gst=Math.round(sub*18)/100;
+  const freight=parseFloat(document.getElementById('F_freight')?.value||0)||0;
+  const grand=Math.round((sub+gst+freight)*100)/100;
+  sub=Math.round(sub*100)/100;
+  const stOn=document.getElementById('F_ston');
+  let shipTo=null;
+  if(stOn&&stOn.checked){
+    const g=id=>document.getElementById(id)?.value||'';
+    shipTo={name:g('F_stn'),gstin:g('F_stg').toUpperCase(),address:g('F_sta'),city:g('F_stc'),state:g('F_sts'),pin:g('F_stp'),phone:g('F_stph')};
+  }
+  return{
+    number:document.getElementById('F_num')?.value||'',
+    date:document.getElementById('F_date')?.value||'',
+    validTill:document.getElementById('F_vt')?.value||'',
+    subject:document.getElementById('F_subj')?.value||'',
+    notes:document.getElementById('F_notes')?.value||'',
+    discount:disc,showDiscInPDF:document.getElementById('F_sdisc')?.checked||false,
+    freight:freight,
+    items,shipTo,subtotal:sub,gstAmt:gst,grandTotal:grand,
+    partyId:ST.party.id,spId:ST.sp.id
+  };
+}
+
+function savePF(andPDF){
+  const data=collectPF();
+  if(!data.number.trim()){toast('PI number required','err');return;}
+  if(!data.items.some(i=>i.itemName)){toast('At least one item add karo','err');return;}
+  const dup=db.proformas.find(p=>p.number===data.number&&p.id!==ST.editId);
+  if(dup&&!confirm('PI number "'+data.number+'" already exists. Phir bhi save karein?'))return;
+  let pfId;
+  if(ST.editId){
+    const idx=db.proformas.findIndex(p=>p.id===ST.editId);
+    if(idx>=0){pfId=ST.editId;db.proformas[idx]=Object.assign({},db.proformas[idx],data);}
+  }else{pfId=uid();db.proformas.push(Object.assign({id:pfId},data));}
+  saveDB();
+  toast(andPDF?'Saved! PDF generating...':'Proforma saved!');
+  if(andPDF)setTimeout(()=>exportPDF(pfId),300);
+  backToPFs();
+}
+
+/* ═══════════════════════════════════════════
+   PDF EXPORT
+═══════════════════════════════════════════ */
+function exportPDF(pfId,previewOnly){
+  const pf=db.proformas.find(p=>p.id===pfId);
+  if(!pf){toast('Proforma not found','err');return;}
+  const party=db.parties.find(p=>p.id===pf.partyId)||{};
+  const sp=db.sp.find(s=>s.id===pf.spId)||{};
+  const showD=pf.showDiscInPDF||false;
+  const cols=showD?9:8;
+
+  // Previous PI for rate comparison arrows
+  const prevPFs=db.proformas.filter(p=>p.partyId===pf.partyId&&p.id!==pfId);
+  const prevPF=prevPFs.length?prevPFs[prevPFs.length-1]:null;
+  const pm={};if(prevPF)prevPF.items.forEach(i=>{if(i.itemName)pm[i.itemName]=sf(i.netRate);});
+
+  // Build rows HTML (string concat — no nested template literals)
+  function cell(cls,content){return '<td'+(cls?' class="'+cls+'"':'')+'>'+content+'</td>';}
+  const rowsHtml=pf.items.map((item,i)=>{
+    const nr=sf(item.netRate);
+    let arrow='';
+    if(pm[item.itemName]!==undefined&&Math.abs(nr-pm[item.itemName])>0.001){
+      const up=nr>pm[item.itemName];
+      arrow='<span style="display:inline-block;font-size:7px;padding:1px 4px;border-radius:3px;margin-left:4px;font-weight:700;background:'+(up?'#fee2e2':'#dcfce7')+';color:'+(up?'#dc2626':'#16a34a')+'">'+(up?'▲':'▼')+'</span>';
+    }
+    const iD=item.itemDisc!==undefined?sf(item.itemDisc):sf(pf.discount);
+    return '<tr style="background:'+(i%2===0?'#f8fafc':'#fff')+'">'
+      +cell('tc s9',''+( i+1))
+      +cell('b',esc(item.itemName)+arrow)
+      +cell('tc',''+esc(item.unit))
+      +cell('tr',''+sf(item.qty))
+      +cell('narr',esc(item.narration||''))
+      +cell('tr mono','₹'+fmt(sf(item.listRate)))
+      +(showD?cell('tc bl',''+iD+'%'):'')
+      +cell('tr mono bbl','₹'+fmt(nr))
+      +cell('tr mono b','₹'+fmt(sf(item.amount)))
+      +'</tr>';
+  }).join('');
+
+  // Company info
+  const C=co;
+  const words=n2w(pf.grandTotal);
+
+  // Ship To block
+  const stHtml=pf.shipTo&&pf.shipTo.name?
+    '<div class="ibox">'+
+      '<div class="ibh" style="background:#0a3d2e"><h4 style="color:#6ee7b7">Ship To</h4></div>'+
+      '<div class="ibb"><strong style="font-size:11px">'+esc(pf.shipTo.name)+'</strong><br>'+
+        (pf.shipTo.address?esc(pf.shipTo.address)+'<br>':'')+
+        ((pf.shipTo.city||pf.shipTo.state)?esc((pf.shipTo.city||'')+(pf.shipTo.state?', '+pf.shipTo.state:'')+( pf.shipTo.pin?' - '+pf.shipTo.pin:''))+'<br>':'')+
+        (pf.shipTo.gstin?'<strong>GSTIN:</strong> '+esc(pf.shipTo.gstin)+'<br>':'')+
+        (pf.shipTo.phone?'☎ '+esc(pf.shipTo.phone):'')+
+      '</div>'+
+    '</div>' : '';
+
+  // Bank block
+  const bankHtml=C.bank?
+    '<div class="bnk">'+
+      '<div class="bikn">🏦</div>'+
+      '<div style="flex:1">'+
+        '<div class="blbl">Bank Details for Payment</div>'+
+        '<div class="bgd">'+
+          '<label>Bank</label><span>'+esc(C.bank)+'</span>'+
+          '<label>A/C No.</label><span>'+esc(C.account||'—')+'</span>'+
+          '<label>IFSC</label><span>'+esc(C.ifsc||'—')+'</span>'+
+          '<label>Branch</label><span>'+esc(C.branch||'—')+'</span>'+
+        '</div>'+
+      '</div>'+
+    '</div>' : '';
+
+  // Discount notice - sirf tab show karo jab showD (Show Disc in PDF) checked ho
+  const discHtml=(showD&&sf(pf.discount)>0)?
+    '<div class="dbar">🏷 Trade Discount: '+sf(pf.discount)+'% — Shown in table</div>' : '';
+
+  // Notes
+  const notesHtml=pf.notes?
+    '<div class="nbox"><strong>Terms &amp; Conditions</strong>'+esc(pf.notes).replace(/\n/g,'<br>')+'</div>' : '';
+
+  const igridCols=pf.shipTo&&pf.shipTo.name?'1fr 1fr 1fr':'1fr 1fr';
+
+  const html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'+
+  '<title>'+esc(pf.number)+'</title>'+
+  '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'+
+  '<style>'+
+  '*{box-sizing:border-box;margin:0;padding:0}'+
+  'html{-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+  'body{font-family:Inter,"Helvetica Neue",Arial,sans-serif;font-size:10.5px;color:#1e293b;background:#fff}'+
+  '.page{max-width:794px;margin:0 auto;min-height:1122px;display:flex;flex-direction:column}'+
+  '.topbar{background:#0f2c5e;padding:10px 26px;display:flex;align-items:center;justify-content:space-between}'+
+  '.logo{height:35px;object-fit:contain}'+
+  '.pibadge{font-size:8px;font-weight:700;letter-spacing:.12em;color:#93c5fd;text-transform:uppercase}'+
+  '.pinum{font-size:15px;font-weight:800;color:#fff;letter-spacing:.02em;font-family:monospace;margin-top:2px}'+
+  '.pidt{font-size:9px;color:#94a3b8;margin-top:1px}'+
+  '.stripe{height:4px;background:linear-gradient(90deg,#b8860b,#f0c040,#b8860b)}'+
+  '.body{padding:13px 26px;flex:1}'+
+  '.hrow{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #e2e8f0}'+
+  '.coaddr{font-size:9px;color:#64748b;line-height:1.8}.coaddr strong{color:#0f2c5e;font-size:10px}'+
+  '.certs{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:center}'+
+  '.cert{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:2px 6px;font-size:7.5px;color:#0f2c5e;font-weight:700;letter-spacing:.04em}'+
+  '.isi{background:#0f2c5e;color:#f0c040;border-radius:3px;padding:2px 7px;font-size:7.5px;font-weight:800;letter-spacing:.06em}'+
+  '.igrid{display:grid;grid-template-columns:'+igridCols+';gap:10px;margin-bottom:10px}'+
+  '.ibox{border:1px solid #e2e8f0;border-radius:7px;overflow:hidden}'+
+  '.ibh{background:#0f2c5e;padding:4px 11px}.ibh h4{font-size:8px;font-weight:700;color:#93c5fd;letter-spacing:.1em;text-transform:uppercase}'+
+  '.ibb{padding:9px 11px;font-size:9.5px;line-height:1.85;color:#374151}.ibb strong{color:#0f2c5e;font-weight:600}'+
+  '.ribbon{display:flex;align-items:center;justify-content:space-between;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;padding:5px 11px;margin-bottom:8px;font-size:9px;color:#1e40af}'+
+  '.dbar{background:#fefce8;border-left:3px solid #eab308;padding:5px 10px;margin-bottom:8px;font-size:9px;color:#713f12;border-radius:0 4px 4px 0}'+
+  '.tw{border:1px solid #e2e8f0;border-radius:7px;overflow:hidden;margin-bottom:12px}'+
+  'table{width:100%;border-collapse:collapse;font-size:9.5px}'+
+  '.th{background:#0f2c5e}.th th{padding:7px 7px;color:#e0f2fe;font-weight:600;font-size:8px;letter-spacing:.05em;text-transform:uppercase}'+
+  'td{padding:5.5px 7px;border-bottom:1px solid #f1f5f9}'+
+  'tr:last-child td{border-bottom:none}'+
+  '.tc{text-align:center}.tr{text-align:right}.mono{font-family:"Courier New",monospace}'+
+  '.s9{color:#94a3b8;font-size:9px;text-align:center}.b{font-weight:500}.narr{font-size:8.5px;color:#0369a1;font-style:italic}'+
+  '.bl{color:#1340b0;font-weight:600}.bbl{color:#1a56db;font-weight:700}'+
+  '.bgrid{display:grid;grid-template-columns:1fr 230px;gap:10px;margin-bottom:10px}'+
+  '.wbox{background:#f0f9ff;border:1px solid #bae6fd;border-radius:7px;padding:9px 11px;font-size:9px;color:#0369a1;display:flex;gap:5px}'+
+  '.wlbl{font-weight:700;white-space:nowrap}'+
+  '.tbox{border:1px solid #e2e8f0;border-radius:7px;overflow:hidden}'+
+  '.trow{display:flex;justify-content:space-between;padding:5px 11px;font-size:9.5px;border-bottom:1px solid #f1f5f9}'+
+  '.trow:last-child{border:none}'+
+  '.tgrand{background:#0f2c5e;padding:7px 11px;display:flex;justify-content:space-between;align-items:center}'+
+  '.tgrand span{color:#fff;font-weight:800}.tgrand .tg2{font-size:13px;font-family:"Courier New",monospace}'+
+  '.bnk{border:1px solid #e2e8f0;border-radius:7px;padding:8px 11px;margin-bottom:8px;display:flex;gap:8px;font-size:9px}'+
+  '.bikn{background:#0f2c5e;color:#f0c040;border-radius:5px;padding:5px 7px;font-size:12px;flex-shrink:0;align-self:flex-start}'+
+  '.blbl{font-size:7.5px;font-weight:700;color:#0f2c5e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}'+
+  '.bgd{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}'+
+  '.bgd label{color:#94a3b8;font-size:7.5px;font-weight:600;text-transform:uppercase;display:block}'+
+  '.bgd span{color:#1e293b;font-weight:600;font-family:monospace;font-size:9px}'+
+  '.nbox{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 5px 5px 0;padding:7px 11px;margin-bottom:10px;font-size:8.5px;color:#78350f;line-height:1.6}'+
+  '.nbox strong{display:block;font-size:9px;color:#451a03;margin-bottom:3px}'+
+  '.pfnote{text-align:center;margin-bottom:10px}'+
+  '.pfnote span{font-size:8px;font-weight:700;color:#dc2626;background:#fff7f7;border:1px dashed #fca5a5;border-radius:4px;padding:3px 12px;letter-spacing:.03em}'+
+  '.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:8px}'+
+  '.sbox{text-align:center}.sline{height:36px;border-bottom:1px solid #cbd5e1;margin-bottom:3px;position:relative}'+
+  '.slbl{font-size:7.5px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.06em}'+
+  '.ssub{font-size:8.5px;color:#374151;margin-top:1px}'+
+  '.gn{font-size:7.5px;color:#94a3b8;text-align:center;margin-bottom:5px}'+
+  '.foot{background:#0f2c5e;padding:7px 26px;display:flex;align-items:center;justify-content:space-between;margin-top:auto}'+
+  '.fl1{font-size:8px;color:#93c5fd}.fl2{font-size:8px;color:#64748b}'+
+  '@page{size:A4;margin:0}'+
+  '@media print{body{margin:0}.page{min-height:100vh}'+
+  '.topbar,.stripe,.th,.tgrand,.foot{-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+  'tr{page-break-inside:avoid}}'+
+  '</style></head><body>'+
+  '<div class="page">'+
+  '<div class="topbar">'+
+    '<img src="https://www.atulpipes.in/images/logo.png" class="logo" alt="Atul Industries" onerror="this.outerHTML=\'<div style=&quot;color:#fff;font-size:15px;font-weight:800&quot;>ATUL<span style=&quot;color:#f0c040&quot;>INDUSTRIES</span></div>\'">'+
+    '<div style="text-align:right"><div class="pibadge">Proforma Invoice</div><div class="pinum">'+esc(pf.number)+'</div><div class="pidt">Date: '+fmtD(pf.date)+(pf.validTill?' &nbsp;|&nbsp; Valid: '+fmtD(pf.validTill):'')+'</div></div>'+
+  '</div>'+
+  '<div class="stripe"></div>'+
+  '<div class="body">'+
+    '<div class="hrow">'+
+      '<div class="coaddr"><strong>'+esc(C.name)+'</strong><br>'+esc(C.address)+', '+esc(C.city)+', '+esc(C.state)+' - '+esc(C.pin)+'<br>'+(C.phone?'☎ '+esc(C.phone)+'&nbsp;&nbsp;':'')+(C.email?'✉ '+esc(C.email)+'&nbsp;&nbsp;':'')+(C.gstin?'GSTIN: '+esc(C.gstin):'')+'</div>'+
+      '<div class="certs"><div class="isi">ISI Marked</div><div class="cert">ISO 9001:2015</div><div class="cert">ISO 14001:2004</div><div class="cert">IS:9537</div><div class="cert">MSME</div></div>'+
+    '</div>'+
+    '<div class="igrid">'+
+      '<div class="ibox"><div class="ibh"><h4>Bill To</h4></div><div class="ibb"><strong style="font-size:11px">'+esc(party.name||'')+'</strong><br>'+(party.address?esc(party.address)+'<br>':'')+((party.city||party.state)?esc((party.city||'')+(party.state?', '+party.state:'')+(party.pin?' - '+party.pin:''))+'<br>':'')+(party.gstin?'<strong>GSTIN:</strong> '+esc(party.gstin)+'<br>':'')+(party.phone?'☎ '+esc(party.phone):'')+'</div></div>'+
+      stHtml+
+      '<div class="ibox"><div class="ibh"><h4>Invoice Details</h4></div><div class="ibb"><strong>PI No.:</strong> '+esc(pf.number)+'<br><strong>Date:</strong> '+fmtD(pf.date)+'<br>'+(pf.validTill?'<strong>Valid Till:</strong> '+fmtD(pf.validTill)+'<br>':'')+'<strong>Supply State:</strong> '+esc((pf.shipTo&&pf.shipTo.state?pf.shipTo.state:party.state)||'')+'<br><strong>Sales Exec:</strong> '+esc(sp.name||'—')+(pf.subject?'<br><strong>Ref:</strong> '+esc(pf.subject):'')+'</div></div>'+
+    '</div>'+
+    '<div class="ribbon"><span>Sales Exec: <strong>'+esc(sp.name||'')+'</strong>'+(sp.phone?' &nbsp;|&nbsp; ☎ '+esc(sp.phone):'')+'</span><span style="color:#64748b">www.atulpipes.in &nbsp;|&nbsp; info@atulpipes.com</span></div>'+
+    discHtml+
+    '<div class="tw"><table>'+
+      '<thead class="th"><tr>'+
+        '<th class="tc" style="width:18px">#</th>'+
+        '<th style="text-align:left">Item Description</th>'+
+        '<th class="tc" style="width:30px">Unit</th>'+
+        '<th class="tr" style="width:26px">Qty</th>'+
+        '<th style="text-align:left;width:'+(showD?'88':'108')+'px">Packing</th>'+
+        '<th class="tr" style="width:'+(showD?'54':'64')+'px">List Rate</th>'+
+        (showD?'<th class="tc" style="width:30px">Disc%</th>':'')+
+        '<th class="tr" style="width:'+(showD?'54':'64')+'px">Net Rate</th>'+
+        '<th class="tr" style="width:58px">Amount</th>'+
+      '</tr></thead>'+
+      '<tbody>'+rowsHtml+'</tbody>'+
+      '<tfoot>'+
+        '<tr style="background:#f1f5f9"><td colspan="'+cols+'" style="text-align:right;font-weight:600;font-size:9.5px;color:#475569;padding:5px 7px">Subtotal (Excl. GST)</td><td class="tr mono" style="font-weight:700;padding:5px 7px">₹'+fmt(pf.subtotal)+'</td></tr>'+
+        '<tr style="background:#e0f2fe"><td colspan="'+cols+'" style="text-align:right;font-size:9px;color:#0369a1;padding:4px 7px">CGST @ 9%</td><td class="tr mono" style="color:#0369a1;font-weight:600;padding:4px 7px">₹'+fmt(pf.gstAmt/2)+'</td></tr>'+
+        '<tr style="background:#e0f2fe"><td colspan="'+cols+'" style="text-align:right;font-size:9px;color:#0369a1;padding:4px 7px">SGST @ 9%</td><td class="tr mono" style="color:#0369a1;font-weight:600;padding:4px 7px">₹'+fmt(pf.gstAmt/2)+'</td></tr>'+
+        (pf.freight>0?'<tr style="background:#fdf4ff"><td colspan="'+cols+'" style="text-align:right;font-size:9px;color:#7c3aed;padding:4px 7px">🚚 Freight Charges</td><td class="tr mono" style="color:#7c3aed;font-weight:600;padding:4px 7px">₹'+fmt(pf.freight)+'</td></tr>':'')+
+      '</tfoot>'+
+    '</table></div>'+
+    '<div class="bgrid">'+
+      '<div class="wbox"><span class="wlbl">Amount in Words: </span><span style="font-style:italic;color:#0c4a6e">'+esc(words)+' Only</span></div>'+
+      '<div class="tbox"><div class="tgrand"><span>Grand Total (Incl. GST)</span><span class="tg2">₹'+fmt(pf.grandTotal)+'</span></div></div>'+
+    '</div>'+
+    bankHtml+
+    notesHtml+
+    '<div class="pfnote"><span>⚠ Proforma Invoice Only — Not a Tax Invoice — Subject to Acceptance</span></div>'+
+    '<div class="sgrid">'+
+      '<div class="sbox"><div class="sline"></div><div class="slbl">Prepared By</div><div class="ssub">'+esc(sp.name||'')+'</div></div>'+
+      '<div class="sbox"><div class="sline"></div><div class="slbl">Checked By</div><div class="ssub">&nbsp;</div></div>'+
+      '<div class="sbox"><div class="sline" style="position:relative"><div style="position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:7.5px;color:#0f2c5e;font-weight:600">'+esc(C.name)+'</div></div><div class="slbl">Authorised Signatory</div><div class="ssub" style="color:#0f2c5e;font-weight:600">For '+esc(C.name)+'</div></div>'+
+    '</div>'+
+    '<div class="gn">Computer generated · '+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})+' · E&amp;OE</div>'+
+  '</div>'+
+  '<div class="foot"><div class="fl1">ATUL INDUSTRIES &nbsp;|&nbsp; ISI Marked PVC Conduit Pipes &amp; Fittings</div><div class="fl2">☎ +91 93112 02798 &nbsp;|&nbsp; www.atulpipes.in</div></div>'+
+  '</div>'+
+  (previewOnly?'':'<script>window.addEventListener("load",function(){setTimeout(function(){window.print();},800);});<\/script>')+
+  '</body></html>';
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.target='_blank';a.rel='noopener';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},2000);
+  toast('PDF tab khul raha hai — Ctrl+P se save/print karein');
+}
+
+/* ═══════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════ */
+function goSettings(){ST.view='settings';R();}
+function exitSettings(){ST.view=ST.sp?'parties':'dashboard';R();}
+
+function rSettings(bc,tba,content){
+  bc.innerHTML='<span class="bc-cur">⚙ Settings</span>';
+  tba.innerHTML='<button class="btn btn-sm" onclick="exitSettings()">← Back</button>';
+  const tabs=[['company','🏢 Company'],['bank','🏦 Bank'],['prices','💰 Prices'],['packing','📦 Packing'],['terms','📝 Terms'],['data','💾 Backup']];
+  content.innerHTML=
+    '<div class="stwrap">'+
+      '<div class="stnav">'+tabs.map(([k,l])=>'<div class="stni'+(ST.stTab===k?' on':'')+'" onclick="ST.stTab=\''+k+'\';rStTab()">'+l+'</div>').join('')+'</div>'+
+      '<div class="stpanel" id="stpanel"></div>'+
+    '</div>';
+  rStTab();
+}
+
+function rStTab(){
+  const el=document.getElementById('stpanel');if(!el)return;
+  const t=ST.stTab;
+
+  if(t==='company'){
+    el.innerHTML='<div class="g2">'+
+      fg('Company Name','co_name',co.name,true)+
+      fg('GSTIN','co_gstin',co.gstin,false,'mono')+
+      '<div class="fg" style="grid-column:1/-1"><label class="fl">Address</label><input id="co_addr" class="fc" value="'+esc(co.address)+'"></div>'+
+      fg('City','co_city',co.city)+fg('State','co_state',co.state)+
+      fg('PIN','co_pin',co.pin)+fg('Phone','co_phone',co.phone)+
+      '<div class="fg" style="grid-column:1/-1"><label class="fl">Email</label><input id="co_email" class="fc" value="'+esc(co.email)+'"></div>'+
+    '</div><button class="btn bp" onclick="saveCo2()">Save Company Details</button>';
+
+  }else if(t==='bank'){
+    el.innerHTML='<div class="g2">'+
+      fg('Bank Name','co_bank',co.bank)+fg('Account No.','co_acct',co.account,'false','mono')+
+      fg('IFSC Code','co_ifsc',co.ifsc,false,'mono')+fg('Branch','co_branch',co.branch)+
+    '</div><button class="btn bp" onclick="saveBank()">Save Bank Details</button>';
+
+  }else if(t==='prices'){
+    el.innerHTML=
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
+        '<p style="font-size:13px;color:var(--text2);flex:1">PI form mein items ka default rate auto-fill hoga</p>'+
+        '<label class="btn btn-sm" style="cursor:pointer">📂 CSV<input type="file" accept=".csv" style="display:none" onchange="impCSV(this)"></label>'+
+        '<button class="btn btn-sm bp" onclick="savePrices()">Save</button>'+
+      '</div>'+
+      '<div style="border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">'+
+      '<table style="width:100%;border-collapse:collapse;font-size:12px">'+
+        '<thead><tr style="background:var(--gray50)"><th style="padding:7px 12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);text-align:left">Item</th><th style="padding:7px 12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);text-align:right;width:140px">List Rate (₹)</th></tr></thead>'+
+        '<tbody>'+ITEMS.map(item=>{
+          const k='pl_'+item.replace(/[\s().]/g,'_');
+          return '<tr style="border-bottom:1px solid var(--gray100)"><td style="padding:5px 12px">'+esc(item)+'</td><td style="padding:3px 10px"><input type="number" id="'+k+'" class="fc" value="'+(pl[item]||'')+'" placeholder="0.00" min="0" step="0.01" style="text-align:right;font-family:monospace"></td></tr>';
+        }).join('')+
+        '</tbody></table></div>'+
+        '<div style="margin-top:8px;font-size:11px;color:var(--text3)">CSV format: item_name,rate (one per line)</div>';
+
+  }else if(t==='packing'){
+    el.innerHTML=
+      '<p style="font-size:13px;color:var(--text2);margin-bottom:12px">Ek bundle mein kitne Metre hain — Mtr↔Bundle auto-convert hoga</p>'+
+      '<div style="border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">'+
+      '<table style="width:100%;border-collapse:collapse;font-size:12px">'+
+        '<thead><tr style="background:var(--gray50)"><th style="padding:7px 12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);text-align:left">Pipe Item</th><th style="padding:7px 12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);text-align:right;width:160px">Mtr per Bundle</th></tr></thead>'+
+        '<tbody>'+ITEMS.filter(isPipe).map(item=>{
+          const k='pk_'+item.replace(/[\s().]/g,'_');
+          const v=(co.pipePacking&&co.pipePacking[item])||( item.includes('25mm')?30:item.includes('20mm')?40:'');
+          return '<tr style="border-bottom:1px solid var(--gray100)"><td style="padding:5px 12px">'+esc(item)+'</td><td style="padding:3px 10px"><input type="number" id="'+k+'" class="fc" value="'+v+'" min="1" step="0.5" style="text-align:right;font-family:monospace"></td></tr>';
+        }).join('')+
+        '</tbody></table></div>'+
+      '<button class="btn bp" style="margin-top:12px" onclick="savePacking()">Save Packing</button>'+
+      '<div style="margin-top:8px;font-size:11px;color:var(--text3)">Default: 25mm=30m/Bdl · 20mm=40m/Bdl</div>';
+
+  }else if(t==='terms'){
+    el.innerHTML=
+      '<p style="font-size:13px;color:var(--text2);margin-bottom:10px">Har nayi PI mein automatically load hongi</p>'+
+      '<div class="fg"><textarea id="dt_terms" class="fc" rows="10" style="font-size:12px;line-height:1.7">'+esc(co.defaultTerms||'')+'</textarea></div>'+
+      '<button class="btn bp" onclick="saveTerms()">Save Terms</button>';
+
+  }else if(t==='data'){
+    el.innerHTML=
+      '<div style="display:flex;flex-direction:column;gap:12px">'+
+        '<div class="card"><div class="cb"><div style="font-size:14px;font-weight:600;margin-bottom:6px">📥 Export Backup</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Saara data JSON mein download karo</div><button class="btn bp" onclick="expBackup()">Export</button></div></div>'+
+        '<div class="card"><div class="cb"><div style="font-size:14px;font-weight:600;margin-bottom:6px">📂 Import Backup</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Pehle backup se restore karo</div><label class="btn bp" style="cursor:pointer">Import<input type="file" accept=".json" style="display:none" onchange="impBackup(this)"></label></div></div>'+
+        '<div class="card" style="border-color:var(--red)"><div class="cb"><div style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:6px">⚠ Reset to Seed Data</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Alok Singh ka original data wapas load karo (current data delete hoga)</div><button class="btn br" onclick="resetToSeed()">Reset</button></div></div>'+
+        '<div class="card" style="border-color:var(--red)"><div class="cb"><div style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:6px">🗑 Clear All Data</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Sab permanently delete (undo nahi hoga)</div><button class="btn br" onclick="clearAll()">Clear All</button></div></div>'+
+      '</div>';
+  }
+
+  // Update nav highlight
+  document.querySelectorAll('.stni').forEach((el2,i)=>{
+    el2.classList.toggle('on',['company','bank','prices','packing','terms','data'][i]===t);
+  });
+}
+
+function fg(label,id,val,req,cls){
+  return '<div class="fg"><label class="fl'+(req?' req':'')+'">'+label+'</label><input id="'+id+'" class="fc'+(cls?' '+cls:'')+'" value="'+esc(val||'')+'"></div>';
+}
+
+/* ─── SETTINGS SAVE ─── */
+function saveCo2(){co.name=v('co_name');co.gstin=v('co_gstin');co.address=v('co_addr');co.city=v('co_city');co.state=v('co_state');co.pin=v('co_pin');co.phone=v('co_phone');co.email=v('co_email');saveCo();toast('Company saved!');}
+function saveBank(){co.bank=v('co_bank');co.account=v('co_acct');co.ifsc=v('co_ifsc');co.branch=v('co_branch');saveCo();toast('Bank saved!');}
+function savePrices(){ITEMS.forEach(item=>{const k='pl_'+item.replace(/[\s().]/g,'_');const el=document.getElementById(k);if(el){const val=sf(el.value);if(val>0)pl[item]=val;else delete pl[item];}});savePL();toast('Prices saved!');}
+function savePacking(){if(!co.pipePacking)co.pipePacking={};ITEMS.filter(isPipe).forEach(item=>{const k='pk_'+item.replace(/[\s().]/g,'_');const el=document.getElementById(k);if(el){const val=sf(el.value);if(val>0)co.pipePacking[item]=val;else delete co.pipePacking[item];}});saveCo();toast('Packing saved!');}
+function saveTerms(){const el=document.getElementById('dt_terms');if(el){co.defaultTerms=el.value;saveCo();toast('Terms saved!');}}
+function impCSV(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{let cnt=0;e.target.result.split('\n').forEach(l=>{const p=l.split(',');if(p.length>=2){const val=sf(p[1].trim());if(p[0].trim()&&val>0){pl[p[0].trim()]=val;cnt++;}}});savePL();toast(cnt+' prices imported!');rStTab();};r.readAsText(f);}
+function expBackup(){const d={db,co,pl};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='pim-backup-'+today()+'.json';a.click();toast('Exported!');}
+function impBackup(inp){const f=inp.files[0];if(!f)return;if(!confirm('Existing data replace ho jaayega. Continue?'))return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.db){db=d.db;saveDB();}if(d.co){co=Object.assign({},DEFAULT_CO,d.co);saveCo();}if(d.pl){pl=d.pl;savePL();}toast('Imported!');R();}catch(err){toast('Invalid file','err');}};r.readAsText(f);}
+function resetToSeed(){if(!confirm('Reset to Alok Singh original data?'))return;db={sp:SEED.sp,parties:SEED.parties,proformas:SEED.proformas};saveDB();toast('Reset to seed data!');R();}
+function clearAll(){if(!confirm('Sab data delete hoga!'))return;if(!confirm('100% sure?'))return;db={sp:[],parties:[],proformas:[]};saveDB();Object.assign(ST,{view:'dashboard',sp:null,party:null,editId:null,cloneId:null,fItems:[],fDisc:0,showDisc:false});toast('Cleared','err');R();}
+function v(id){return document.getElementById(id)?.value||'';}
+
+/* ═══════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════ */
+function modal(title,bodyHtml,onOk,okLbl,wide){
+  closeModal();
+  const ov=document.createElement('div');ov.className='ov';ov.id='_ov';
+  ov.innerHTML=
+    '<div class="modal'+(wide?' modal-w':'')+'" onclick="event.stopPropagation()">'+
+      '<div class="mh"><h3>'+esc(title)+'</h3><button class="mcls" onclick="closeModal()">✕</button></div>'+
+      '<div class="mbody">'+bodyHtml+'</div>'+
+      '<div class="mfoot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn bp" id="_mok">'+esc(okLbl||'Save')+'</button></div>'+
+    '</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',closeModal);
+  document.getElementById('_mok').onclick=onOk;
+  setTimeout(()=>ov.querySelector('input')?.focus(),50);
+}
+function closeModal(){const m=document.getElementById('_ov');if(m)m.remove();}
+
+/* ═══════════════════════════════════════════
+   SP CRUD
+═══════════════════════════════════════════ */
+function openAddSP(){
+  modal('Add Salesperson',
+    '<div class="fg"><label class="fl req">Full Name</label><input id="M_spn" class="fc" placeholder="e.g. Ramesh Kumar"></div>'+
+    '<div class="fg"><label class="fl">Phone</label><input id="M_spp" class="fc" placeholder="Mobile number"></div>'+
+    '<div class="fg"><label class="fl">Email</label><input id="M_spe" class="fc" placeholder="Email address"></div>',
+    ()=>{
+      const n=v('M_spn').trim();if(!n){toast('Name required','err');return;}
+      db.sp.push({id:uid(),name:n,phone:v('M_spp'),email:v('M_spe')});
+      saveDB();closeModal();toast('Salesperson added!');R();
+    },'Add');
+}
+function openEditSP(id){
+  const sp=db.sp.find(s=>s.id===id);if(!sp)return;
+  modal('Edit: '+sp.name,
+    '<div class="fg"><label class="fl req">Full Name</label><input id="M_spn" class="fc" value="'+esc(sp.name)+'"></div>'+
+    '<div class="fg"><label class="fl">Phone</label><input id="M_spp" class="fc" value="'+esc(sp.phone||'')+'"></div>'+
+    '<div class="fg"><label class="fl">Email</label><input id="M_spe" class="fc" value="'+esc(sp.email||'')+'"></div>',
+    ()=>{
+      const n=v('M_spn').trim();if(!n){toast('Name required','err');return;}
+      sp.name=n;sp.phone=v('M_spp');sp.email=v('M_spe');
+      if(ST.sp&&ST.sp.id===id)ST.sp=sp;
+      saveDB();closeModal();toast('Updated!');R();
+    },'Save');
+}
+function delSP(id){
+  const sp=db.sp.find(s=>s.id===id);if(!sp)return;
+  const pids=db.parties.filter(p=>p.spId===id).map(p=>p.id);
+  const pc=db.proformas.filter(pf=>pids.includes(pf.partyId)).length;
+  if(!confirm('Delete '+sp.name+'?\n'+pids.length+' parties aur '+pc+' PIs bhi delete ho jaayenge.'))return;
+  db.proformas=db.proformas.filter(pf=>!pids.includes(pf.partyId));
+  db.parties=db.parties.filter(p=>p.spId!==id);
+  db.sp=db.sp.filter(s=>s.id!==id);
+  saveDB();ST.sp=null;ST.view='dashboard';toast('Deleted','err');R();
+}
+
+/* ═══════════════════════════════════════════
+   PARTY CRUD
+═══════════════════════════════════════════ */
+function partyForm(p){
+  return '<div class="g2">'+
+    '<div class="fg" style="grid-column:1/-1"><label class="fl req">Party / Firm Name</label><input id="M_pn" class="fc" value="'+esc(p?p.name||'':'')+'" placeholder="Firm name"></div>'+
+    '<div class="fg"><label class="fl">Contact Person</label><input id="M_pc" class="fc" value="'+esc(p?p.contact||'':'')+'"></div>'+
+    '<div class="fg"><label class="fl">Phone</label><input id="M_pph" class="fc" value="'+esc(p?p.phone||'':'')+'"></div>'+
+    '<div class="fg" style="grid-column:1/-1"><label class="fl">Address</label><input id="M_pa" class="fc" value="'+esc(p?p.address||'':'')+'"></div>'+
+    '<div class="fg"><label class="fl">City</label><input id="M_pci" class="fc" value="'+esc(p?p.city||'':'')+'"></div>'+
+    '<div class="fg"><label class="fl">State</label><input id="M_pst" class="fc" value="'+esc(p?p.state||'Uttar Pradesh':'Uttar Pradesh')+'"></div>'+
+    '<div class="fg"><label class="fl">PIN</label><input id="M_ppin" class="fc" value="'+esc(p?p.pin||'':'')+'"></div>'+
+    '<div class="fg"><label class="fl">GSTIN</label>'+
+      '<div style="display:flex;gap:6px">'+
+        '<input id="M_pgstin" class="fc mono" style="flex:1" placeholder="15-digit GSTIN" value="'+esc(p?p.gstin||'':'')+'">'+
+        '<button class="btn btn-sm" onclick="gstFillModal()" type="button">🔍</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="fg" style="grid-column:1/-1"><label class="fl">Email</label><input id="M_pe" class="fc" value="'+esc(p?p.email||'':'')+'"></div>'+
+  '</div>';
+}
+function gstFillModal(){
+  const el=document.getElementById('M_pgstin');if(!el)return;
+  const gstin=el.value.trim().toUpperCase();
+  if(gstin.length!==15){toast('GSTIN 15 digits chahiye','err');return;}
+  const sm={'01':'J&K','02':'HP','03':'Punjab','04':'Chandigarh','05':'Uttarakhand','06':'Haryana','07':'Delhi','08':'Rajasthan','09':'Uttar Pradesh','10':'Bihar','18':'Assam','19':'West Bengal','20':'Jharkhand','21':'Odisha','22':'CG','23':'MP','24':'Gujarat','27':'Maharashtra','29':'Karnataka','30':'Goa','32':'Kerala','33':'Tamil Nadu','36':'Telangana','37':'AP'};
+  const state=sm[gstin.slice(0,2)]||'';
+  const sel=document.getElementById('M_pst');if(sel&&state)sel.value=state;
+  toast(state?'State: '+state+' auto-filled':'State code not found','inf');
+}
+function getPartyFormData(){
+  return{name:v('M_pn').trim(),contact:v('M_pc'),phone:v('M_pph'),address:v('M_pa'),city:v('M_pci'),state:v('M_pst'),pin:v('M_ppin'),gstin:v('M_pgstin').toUpperCase(),email:v('M_pe')};
+}
+function openAddParty(){
+  modal('Add Party',partyForm(null),()=>{
+    const d=getPartyFormData();
+    if(!d.name){toast('Party name required','err');return;}
+    db.parties.push(Object.assign({id:uid(),spId:ST.sp.id},d));
+    saveDB();closeModal();toast('Party added!');R();
+  },'Add Party',true);
+}
+function openEditParty(id){
+  const p=db.parties.find(x=>x.id===id);if(!p)return;
+  modal('Edit: '+p.name,partyForm(p),()=>{
+    const d=getPartyFormData();
+    if(!d.name){toast('Party name required','err');return;}
+    Object.assign(p,d);
+    saveDB();closeModal();toast('Updated!');R();
+  },'Save',true);
+}
+function delParty(id){
+  const p=db.parties.find(x=>x.id===id);if(!p)return;
+  const cnt=db.proformas.filter(pf=>pf.partyId===id).length;
+  if(!confirm('Delete '+p.name+'?\n'+cnt+' PI(s) bhi delete ho jaayenge.'))return;
+  db.proformas=db.proformas.filter(pf=>pf.partyId!==id);
+  db.parties=db.parties.filter(x=>x.id!==id);
+  saveDB();toast('Deleted','err');R();
+}
+function delPF(id){
+  if(!confirm('This proforma delete ho jaayega?'))return;
+  db.proformas=db.proformas.filter(p=>p.id!==id);
+  saveDB();toast('Deleted','err');
+  rPartyPFs(document.getElementById('bc'),document.getElementById('tba'),document.getElementById('content'));
+}
+
+/* ═══════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+═══════════════════════════════════════════ */
+document.addEventListener('keydown',function(e){
+  const tag=e.target.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  if(e.key==='Escape'){
+    if(document.getElementById('_ov')){closeModal();return;}
+    if(ST.view==='form'){backToPFs();return;}
+    if(ST.view==='settings'){exitSettings();return;}
+    if(ST.view==='partyPFs'){ST.tab='parties';ST.view='parties';ST.party=null;R();return;}
+  }
+  if(e.key==='n'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    if(ST.view==='partyPFs'&&ST.party){newPF();return;}
+    if(ST.view==='parties'&&ST.sp){openAddParty();return;}
+    if(ST.view==='dashboard'){openAddSP();return;}
+  }
+});
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+R();
+</script>
+</body>
+</html>
