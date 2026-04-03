@@ -1,0 +1,76 @@
+====================================================================
+           INVOICE APP - EASY SETUP GUIDE FOR WINDOWS
+====================================================================
+
+Follow these simple steps one-by-one to get the Invoice App running on your computer. Don't worry if it looks like coding, you just need to copy, paste, and press Enter!
+
+STEP 1: DOWNLOAD AND INSTALL PYTHON
+--------------------------------------------------------------------
+1. Go to this website: https://www.python.org/downloads/
+2. Click the yellow button that says "Download Python 3.x.x".
+3. Once downloaded, open the installer file.
+4. ** VERY IMPORTANT **: At the very bottom of the installer window, check the box that says "Add Python.exe to PATH" BEFORE you click "Install Now".
+5. Click "Install Now" and wait for it to finish.
+
+STEP 2: DOWNLOAD THE APP CODE
+--------------------------------------------------------------------
+1. Go to your GitHub link: https://github.com/Chandanv86/invoice_django
+2. Click the green "Code" button near the top right.
+3. Click "Download ZIP".
+4. Once downloaded, find the file (usually in your Downloads folder), right-click the ZIP file, and click "Extract All...".
+5. Extract it to your Desktop or a folder where you can easily find it. Name the folder "invoice_project".
+
+STEP 3: OPENING THE COMMAND PROMPT (TERMINAL)
+--------------------------------------------------------------------
+1. Open the newly extracted "invoice_project" folder (the one containing the file "manage.py").
+2. Click inside the exact folder path bar at the top of the window (where it says "This PC > Desktop > invoice_project").
+3. Delete the text there, type "cmd" (without quotes) and hit Enter. 
+4. A black terminal window will pop up.
+
+STEP 4: SETUP THE APP ENVIRONMENT
+--------------------------------------------------------------------
+In the black terminal window, copy exactly what is written below, paste it into the window, and press Enter after each line. Wait for each line to completely finish before typing the next one.
+
+1. Create a special environment for the app:
+python -m venv venv
+
+2. Turn the environment on (You should see `(venv)` appear on the left side):
+venv\Scripts\activate
+
+3. Install the required app features (this needs internet and takes a minute):
+pip install -r requirements.txt
+
+STEP 5: PREPARE THE DATABASE AND DATA
+--------------------------------------------------------------------
+Still in the terminal (make sure it says `(venv)`), type the following one by one and press Enter:
+
+1. Setup the database files:
+python manage.py migrate
+
+2. Load all your saved invoices and parties into the system:
+python manage.py seed_data
+
+STEP 6: START THE APP!
+--------------------------------------------------------------------
+Type this final command to turn the server on:
+
+python manage.py runserver
+
+You will see some text appear saying "Starting development server". The terminal window must stay open as long as you want to use the app. You can minimize it.
+
+STEP 7: OPEN IN YOUR BROWSER
+--------------------------------------------------------------------
+1. Open Google Chrome, Edge, or Safari.
+2. In the top address bar (where you type www.google.com), type the following exactly and press Enter:
+http://127.0.0.1:8000/
+
+Congratulations! You should now see your old invoice app perfectly running!
+
+HOW TO START IT NEXT TIME YOU TURN YOUR COMPUTER ON:
+--------------------------------------------------------------------
+You don't have to repeat all the steps above to use it tomorrow. Every time you restart your PC and want to use the app, just do:
+1. Open the "invoice_project" folder.
+2. Type "cmd" in the top bar and press Enter.
+3. Type: venv\Scripts\activate (Press Enter)
+4. Type: python manage.py runserver (Press Enter)
+5. Open your browser to http://127.0.0.1:8000/
